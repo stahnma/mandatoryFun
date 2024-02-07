@@ -1,4 +1,4 @@
-module github.com/stahnma/zoomwh
+module github.com/stahnma/mandatoryFun/zoom-notifier
 
 go 1.21
 

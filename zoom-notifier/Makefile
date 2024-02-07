@@ -1,6 +1,6 @@
 
 
-NAME=zoomwh
+NAME=zoom-notifier
 
 default: build
 
