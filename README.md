@@ -13,6 +13,7 @@ The collection currently consists of:
 
   * slack-uploader -> An http server allows for uploads of pictures and once uploaded can be autoposted to a slack channel.
   * zoom-notifier -> A service that notifies slack or IRC when somebody joins or leaves a zoom meeting.
+  * slack-emoji-grabber -> A quick utility to grab all the emojis from a slack team.
 
 
 # License
