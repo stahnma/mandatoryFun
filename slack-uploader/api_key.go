@@ -46,6 +46,11 @@ func (ae ApiEntry) isRevoked() bool {
 	return ae.Revoked
 }
 
+func (ae ApiEntry) updateLastUsed() {
+	ae.LastUsed = time.Now().Format(time.RFC3339)
+	ae.save()
+}
+
 func SearchAPIKeyInDirectory(searchString string) ([]string, error) {
 	directoryPath := viper.GetString("credentials_dir")
 	var matches []string
@@ -130,7 +135,7 @@ func issueNewApiKey(slackId string) bool {
 	log.Debugln("(issueNewApiKey) validateSlackId returned: ", b)
 	// at this point we know the slack id is valid
 	if b {
-		keyBlob.IssueDate = time.Now().String()
+		keyBlob.IssueDate = time.Now().Format(time.RFC3339)
 		keyBlob.ApiKey = generateApiKey()
 		keyBlob.SlackId = slackId
 		// TODO creatre revocation mechanism
@@ -169,7 +174,6 @@ func revokeApiKey(key string) bool {
 	return true
 }
 
-// Fixme implement
 func isRevoked(filePath string) (bool, error) {
 	log.Debugln("(isRevoked)", filePath)
 	ae, err := loadApiEntryFromFile(filePath)
@@ -179,6 +183,9 @@ func isRevoked(filePath string) (bool, error) {
 		return true, err
 	}
 	log.Debugln("(isRevoked) ae.Revoked", ae.Revoked)
+	if ae.Revoked == false {
+		ae.updateLastUsed()
+	}
 	return ae.Revoked == true, nil
 }
 
