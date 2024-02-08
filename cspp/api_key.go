@@ -131,7 +131,8 @@ func loadApiEntryFromFile(filePath string) (ApiEntry, error) {
 func issueNewApiKey(slackId string) bool {
 	log.Debugln("(issueNewApiKey) slackId", slackId)
 	var keyBlob ApiEntry
-	b := validateSlackId(slackId, "TTEGY45PB")
+	teamId := viper.GetString("slack_team_id")
+	b := validateSlackId(slackId, teamId)
 	log.Debugln("(issueNewApiKey) validateSlackId returned: ", b)
 	// at this point we know the slack id is valid
 	if b {
