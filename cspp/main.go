@@ -24,6 +24,7 @@ func init() {
 
 	viper.SetDefault("port", "8080")
 	viper.SetDefault("data_dir", "data")
+	viper.SetDefault("base_url", "")
 	viper.BindEnv("port", "CSPP_PORT")
 	viper.BindEnv("data_dir", "CSPP_DATA_DIR")
 
@@ -58,6 +59,7 @@ func init() {
 	viper.BindEnv("processed_dir", "CSPP_PROCESSED_DIR")
 	viper.BindEnv("uploads_dir", "CSPP_UPLOADS_DIR")
 	viper.BindEnv("credentials_dir", "CSPP_CREDENTIALS_DIR")
+	viper.BindEnv("base_url", "CSPP_BASE_URL")
 
 	setupDirectory(viper.GetString("data_dir"))
 	setupDirectory(viper.GetString("discard_dir"))
@@ -109,5 +111,4 @@ func main() {
 
 	// Block and wait for a signal to exit
 	<-done
-
 }
