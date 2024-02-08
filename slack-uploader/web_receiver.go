@@ -166,10 +166,10 @@ func postApiKeyHandler(c *gin.Context) {
 		}
 		log.Debugln("(postApiKeyHandler) ae.SlackId is:", ae.SlackId)
 		slackId := ae.SlackId
-		if apikey := issueNewApiKey(slackId); apikey != "" {
-			c.JSON(http.StatusOK, gin.H{"status": "ok", "apikey": apikey})
+		if issueNewApiKey(slackId) {
+			c.JSON(http.StatusOK, gin.H{"status": "ok", "apikey": "See slack DM for your new API key."})
 		} else {
-			c.JSON(http.StatusNetworkAuthenticationRequired, gin.H{"status": "SlackID not found for team."})
+			c.JSON(http.StatusNetworkAuthenticationRequired, gin.H{"status": "SlackID not found for team or error creating key."})
 		}
 	}
 }
