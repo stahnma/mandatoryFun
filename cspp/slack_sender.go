@@ -88,9 +88,19 @@ func sendKeyInDM(slackId string, key string) error {
 	log.Debugln("(sendKeyInDM) slackId", slackId, "key", key)
 	slack_token := viper.GetString("slack_token")
 	api := slack.New(slack_token)
+	msg := "Your CSPP API key is:  `" + key + "`" + ". Please keep it safe and do not share it with anyone. "
+	msg += "In most cases, you can use your key and the entire CSPP service via something like the following command:\n"
+	cmd := `curl -X POST \
+  -F "image=@/path/to/file" \
+  -F "caption=String you want to with the picture"  \
+  -H "X-API-KEY: $API_KEY" \
+ <service URI>"`
+	msg += "```" + cmd + "```"
+	// TODO add the service URI to the message
+	msg += "\n See /usage for more details."
 
 	_, _, err := api.PostMessage(slackId,
-		slack.MsgOptionText(key, false),
+		slack.MsgOptionText(msg, false),
 		slack.MsgOptionAsUser(true),
 	)
 	if err != nil {
