@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,9 +11,18 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/russross/blackfriday/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
+
+/*
+This next line is significant. It tells the compiler to include the static
+file in the binary. There also cannot be space between // and go:embed.
+*/
+
+//go:embed static/usage.md
+var md embed.FS
 
 // ImageInfo represents the data to be stored in the JSON file
 type ImageInfo struct {
@@ -129,8 +139,22 @@ func receiver(done chan struct{}) {
 	router.POST("/upload", uploadHandler)
 	router.POST("/api", postApiKeyHandler)
 	router.DELETE("/api", deleteApiKeyHandler)
+	router.GET("/usage", staticFileServer)
 	// TODO implement the PUT method to replace the API key
 	router.Run(":" + viper.GetString("PORT"))
+}
+
+func staticFileServer(c *gin.Context) {
+	log.Debugln("(staticFileServer)")
+	markdownContent, err := md.ReadFile("static/usage.md")
+	if err != nil {
+		log.Errorln("Error reading usage.md:", err)
+		c.String(http.StatusInternalServerError, "Error reading static documentation")
+		return
+	}
+	html := blackfriday.Run(markdownContent)
+	c.Data(http.StatusOK, "text/html; charset=utf-8", html)
+	return
 }
 
 func deleteApiKeyHandler(c *gin.Context) {
