@@ -135,7 +135,7 @@ func issueNewApiKey(slackId string) bool {
 	log.Debugln("(issueNewApiKey) validateSlackId returned: ", b)
 	// at this point we know the slack id is valid
 	if b {
-		keyBlob.IssueDate = time.Now().String()
+		keyBlob.IssueDate = time.Now().Format(time.RFC3339)
 		keyBlob.ApiKey = generateApiKey()
 		keyBlob.SlackId = slackId
 		// TODO creatre revocation mechanism
