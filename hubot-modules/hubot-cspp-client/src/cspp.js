@@ -8,7 +8,7 @@
 //   HUBOT_CSPP_API_URI - Defaults to localhost:7177
 //
 // Commands:
-//   hubot api key - request an API Key from CSPP
+//   hubot cspp api key - request an API Key from CSPP
 //
 // Author:
 //   stahnma
