@@ -38,6 +38,7 @@ func uploadAuthorization(c *gin.Context) error {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		c.Error(fmt.Errorf("Unauthorized request from IP: %s", c.ClientIP()))
 		log.Warnln("Request has invalid API key")
+		err = fmt.Errorf("Invalid API Key")
 		return err
 	}
 	return nil
