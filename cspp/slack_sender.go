@@ -87,17 +87,21 @@ func handleNewFile(filePath string) {
 func sendKeyInDM(slackId string, key string) error {
 	log.Debugln("(sendKeyInDM) slackId", slackId, "key", key)
 	slack_token := viper.GetString("slack_token")
+	base_url := viper.GetString("base_url")
+	if base_url == "" {
+		base_url = "<service address>"
+	}
 	api := slack.New(slack_token)
-	msg := "Your CSPP API key is:  `" + key + "`" + ". Please keep it safe and do not share it with anyone. "
-	msg += "In most cases, you can use your key and the entire CSPP service via something like the following command:\n"
-	cmd := `curl -X POST \
-  -F "image=@/path/to/file" \
-  -F "caption=String you want to with the picture"  \
-  -H "X-API-KEY: $API_KEY" \
- <service URI>"`
+	msg := "You are on your way to :poop:posting!\n"
+	msg += "Your <https://github.com/stahnma/mandatoryFun/tree/main/cspp|CSPP> API key is:  `" + key + "`" + ". Please keep it safe and do not share it with anyone. "
+	msg += "In most cases, you can use your key with the entire CSPP service via something like the following command:\n"
+	cmd := "curl -X POST \\\n "
+	cmd += "-F \"image=@/path/to/file\" \\\n "
+	cmd += "-F \"caption=String you want to with the picture\" \\\n "
+	cmd += "-H \"X-API-KEY: $API_KEY\" \\\n "
+	cmd += base_url + "/upload" + "\n"
 	msg += "```" + cmd + "```"
-	// TODO add the service URI to the message
-	msg += "\n See /usage for more details."
+	msg += "\n See " + base_url + "/usage for more details."
 
 	_, _, err := api.PostMessage(slackId,
 		slack.MsgOptionText(msg, false),
