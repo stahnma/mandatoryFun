@@ -197,7 +197,7 @@ func generateApiKey() string {
 }
 
 func validateSlackId(userID, teamID string) bool {
-	token := viper.GetString("SLACK_TOKEN")
+	token := viper.GetString("slack_token")
 	log.Debugln("(validateSlackId) userId: ", userID, " teamId: ", teamID, " token: ", token)
 	api := slack.New(token)
 	userInfo, err := api.GetUserInfo(userID)

@@ -128,7 +128,7 @@ func getAuthor(apiKey string) string {
 	if err != nil {
 		log.Errorln("Unable to load api entry from file: ", apiKey, " error: ", err)
 	}
-	token := viper.GetString("SLACK_TOKEN")
+	token := viper.GetString("slack_token")
 	slackApi := slack.New(token)
 	userInfo, err := slackApi.GetUserInfo(ae.SlackId)
 	if err != nil {
