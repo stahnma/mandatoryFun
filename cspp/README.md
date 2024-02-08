@@ -1,4 +1,4 @@
-# Slack Image Uploader
+# Collaborative Sh:poop:t Posting Pipeline (CSPP)
 
 This program reads from a directroy and sends all images found to a slack channel. After sending them to a channel, it moves processed images to the 'processed' folder.
 
@@ -17,4 +17,4 @@ You need to set the following enviornment variables.
 # License
 MIT
 
-(c) Michael Stahnke 2023
+(c) Michael Stahnke 20232,2024
