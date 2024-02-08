@@ -1,6 +1,6 @@
 
 
-NAME=slack-image-poster
+NAME=cspp
 
 default: stuff
 

@@ -1,4 +1,4 @@
-module github.com/stahnma/slack-image-poster
+module github.com/stahnma/mandatoryFun/cspp
 
 go 1.20
 
