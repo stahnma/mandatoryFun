@@ -22,7 +22,6 @@ func init() {
 	// Bind the command line flags to Viper
 	viper.BindPFlags(pflag.CommandLine)
 
-	// FIXME move other config here: slackToken, slackChannel, etc.
 	viper.SetDefault("port", "8080")
 	viper.SetDefault("data_dir", "data")
 	viper.BindEnv("port", "PORT")
@@ -37,12 +36,17 @@ func init() {
 		fmt.Println("SLACK_CHANNEL environment variable not set.")
 		bugout = true
 	}
+	if value := os.Getenv("SLACK_TEAM_ID"); value == "" {
+		fmt.Println("SLACK_TEAM_ID environment variable not set.")
+		bugout = true
+	}
 	if bugout == true {
 		os.Exit(1)
 	}
 
 	viper.MustBindEnv("slack_token", "SLACK_TOKEN")
 	viper.MustBindEnv("slack_channel", "SLACK_CHANNEL")
+	viper.MustBindEnv("slack_team_id", "SLACK_TEAM_ID")
 
 	viper.SetDefault("discard_dir", viper.GetString("data_dir")+"/discard")
 	viper.SetDefault("processed_dir", viper.GetString("data_dir")+"/processed")
@@ -60,7 +64,6 @@ func init() {
 	setupDirectory(viper.GetString("processed_dir"))
 	setupDirectory(viper.GetString("uploads_dir"))
 	setupDirectory(viper.GetString("credentials_dir"))
-
 }
 
 func main() {
