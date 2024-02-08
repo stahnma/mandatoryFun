@@ -46,6 +46,11 @@ func (ae ApiEntry) isRevoked() bool {
 	return ae.Revoked
 }
 
+func (ae ApiEntry) updateLastUsed() {
+	ae.LastUsed = time.Now().Format(time.RFC3339)
+	ae.save()
+}
+
 func SearchAPIKeyInDirectory(searchString string) ([]string, error) {
 	directoryPath := viper.GetString("credentials_dir")
 	var matches []string
@@ -169,7 +174,6 @@ func revokeApiKey(key string) bool {
 	return true
 }
 
-// Fixme implement
 func isRevoked(filePath string) (bool, error) {
 	log.Debugln("(isRevoked)", filePath)
 	ae, err := loadApiEntryFromFile(filePath)
@@ -179,6 +183,9 @@ func isRevoked(filePath string) (bool, error) {
 		return true, err
 	}
 	log.Debugln("(isRevoked) ae.Revoked", ae.Revoked)
+	if ae.Revoked == false {
+		ae.updateLastUsed()
+	}
 	return ae.Revoked == true, nil
 }
 
