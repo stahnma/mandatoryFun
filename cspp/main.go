@@ -24,40 +24,40 @@ func init() {
 
 	viper.SetDefault("port", "8080")
 	viper.SetDefault("data_dir", "data")
-	viper.BindEnv("port", "PORT")
-	viper.BindEnv("data_dir", "DATA_DIR")
+	viper.BindEnv("port", "CSPP_PORT")
+	viper.BindEnv("data_dir", "CSPP_DATA_DIR")
 
 	var bugout bool
-	if value := os.Getenv("SLACK_TOKEN"); value == "" {
-		fmt.Println("SLACK_TOKEN environment variable not set.")
+	if value := os.Getenv("CSPP_SLACK_TOKEN"); value == "" {
+		fmt.Println("CSPP_SLACK_TOKEN environment variable not set.")
 		bugout = true
 	}
-	if value := os.Getenv("SLACK_CHANNEL"); value == "" {
-		fmt.Println("SLACK_CHANNEL environment variable not set.")
+	if value := os.Getenv("CSPP_SLACK_CHANNEL"); value == "" {
+		fmt.Println("CSPP_SLACK_CHANNEL environment variable not set.")
 		bugout = true
 	}
-	if value := os.Getenv("SLACK_TEAM_ID"); value == "" {
-		fmt.Println("SLACK_TEAM_ID environment variable not set.")
+	if value := os.Getenv("CSPP_SLACK_TEAM_ID"); value == "" {
+		fmt.Println("CSPP_SLACK_TEAM_ID environment variable not set.")
 		bugout = true
 	}
 	if bugout == true {
 		os.Exit(1)
 	}
 
-	viper.MustBindEnv("slack_token", "SLACK_TOKEN")
-	viper.MustBindEnv("slack_channel", "SLACK_CHANNEL")
-	viper.MustBindEnv("slack_team_id", "SLACK_TEAM_ID")
+	viper.MustBindEnv("slack_token", "CSPP_SLACK_TOKEN")
+	viper.MustBindEnv("slack_channel", "CSPP_SLACK_CHANNEL")
+	viper.MustBindEnv("slack_team_id", "CSPP_SLACK_TEAM_ID")
 
 	viper.SetDefault("discard_dir", viper.GetString("data_dir")+"/discard")
 	viper.SetDefault("processed_dir", viper.GetString("data_dir")+"/processed")
 	viper.SetDefault("uploads_dir", viper.GetString("data_dir")+"/uploads")
 	viper.SetDefault("credentials_dir", viper.GetString("data_dir")+"/credentials")
 
-	viper.BindEnv("data_dir", "DATA_DIR")
-	viper.BindEnv("discard_dir", "DISCARD_DIR")
-	viper.BindEnv("processed_dir", "PROCESSED_DIR")
-	viper.BindEnv("uploads_dir", "UPLOADS_DIR")
-	viper.BindEnv("credentials_dir", "CREDENTIALS_DIR")
+	viper.BindEnv("data_dir", "CSPP_DATA_DIR")
+	viper.BindEnv("discard_dir", "CSPP_DISCARD_DIR")
+	viper.BindEnv("processed_dir", "CSPP_PROCESSED_DIR")
+	viper.BindEnv("uploads_dir", "CSPP_UPLOADS_DIR")
+	viper.BindEnv("credentials_dir", "CSPP_CREDENTIALS_DIR")
 
 	setupDirectory(viper.GetString("data_dir"))
 	setupDirectory(viper.GetString("discard_dir"))

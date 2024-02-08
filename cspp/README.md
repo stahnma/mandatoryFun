@@ -10,9 +10,10 @@ Have you been making stupid/silly/wonderful AI pictures and art work? Do you wan
 
 You need to set the following enviornment variables.
 
-    SLACK_TOKEN
-    IMAGE_DIRECTORY
-    SLACK_CHANNEL
+    CSPP_SLACK_TOKEN
+    CSPP_DATA_DIRECTORY
+    CSPP_SLACK_CHANNEL
+    CSPP_SLACK_TEAM
 
 # License
 MIT
