@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -81,6 +82,21 @@ func handleNewFile(filePath string) {
 		handleImageFile(j)
 		moveToDir(filePath, viper.GetString("processed_dir"))
 	}
+}
+
+func sendKeyInDM(slackId string, key string) error {
+	log.Debugln("(sendKeyInDM) slackId", slackId, "key", key)
+	slack_token := viper.GetString("slack_token")
+	api := slack.New(slack_token)
+
+	_, _, err := api.PostMessage(slackId,
+		slack.MsgOptionText(key, false),
+		slack.MsgOptionAsUser(true),
+	)
+	if err != nil {
+		return fmt.Errorf("error sending message to Slack user: %v", err)
+	}
+	return nil
 }
 
 func handleImageFile(j ImageInfo) {

@@ -123,7 +123,7 @@ func loadApiEntryFromFile(filePath string) (ApiEntry, error) {
 }
 
 // TODO get team id from a global var
-func issueNewApiKey(slackId string) string {
+func issueNewApiKey(slackId string) bool {
 	log.Debugln("(issueNewApiKey) slackId", slackId)
 	var keyBlob ApiEntry
 	b := validateSlackId(slackId, "TTEGY45PB")
@@ -137,9 +137,14 @@ func issueNewApiKey(slackId string) string {
 		keyBlob.Revoked = false
 		log.Debugln("(issueNewApiKey) keyBlob: ", keyBlob.ApiKey)
 		keyBlob.save()
-		return keyBlob.ApiKey
+		err := sendKeyInDM(slackId, keyBlob.ApiKey)
+		if err != nil {
+			log.Errorln("(issueNewApiKey) Error sending key in DM:", err)
+			return false
+		}
+		return true
 	}
-	return ""
+	return false
 }
 
 func revokeApiKey(key string) bool {
