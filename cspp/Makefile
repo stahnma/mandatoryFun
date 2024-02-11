@@ -49,5 +49,14 @@ install: build
  
 platforms: mac linux
 
+test: fmt
+	go test -v .
+
+tests: test
+
+
 apirequest:
 	curl -X POST -H "Content-Type: application/json" -d @fixtures/api_request.json http://localhost:7171/api
+
+
+.PHONY: all clean fmt tidy build install test tests apirequest stuff platforms mac linux darwin-arm64 darwin-amd64 linux-arm64 linux-amd64 mac-arm64 mac-amd64
