@@ -44,6 +44,7 @@ func init() {
 	}
 	if bugout == true {
 		os.Exit(1)
+		log.Fatal("Exiting...")
 	}
 
 	viper.MustBindEnv("slack_token", "CSPP_SLACK_TOKEN")
@@ -79,8 +80,7 @@ func validatePortVsBaseURL() {
 	if baseurl != "" && port != "" {
 		parsedURL, err := url.Parse(baseurl)
 		if err != nil {
-			log.Errorln("Error parsing base URL:", err)
-			os.Exit(1)
+			log.Fatalln("Error parsing base URL:", err)
 		}
 		baseport := parsedURL.Port()
 		if baseport == "" && port != "" {
