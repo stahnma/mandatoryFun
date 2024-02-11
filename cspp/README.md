@@ -34,7 +34,9 @@ You need to set the following enviornment variables.
 | `CSPP_UPLOADS_DIR`    | directory to save images                               | optional | `/var/lib/cspp/uploads`                                      | `./data/uploads`                |
 | `CSPP_CREDENTIALS_DIR`| directory to save API keys as json blobs               | optional | `/var/lib/cspp/credentials`                                  | `./data/credentials`           |
 
-:warning: If you specifiy `CSPP_BASE_URL` with a port on the string and specify `CSPP_PORT` and they do not match, you may get unpredictable results
+:warning: How do ports work?
+
+If you specify a port via `CSPP_PORT` and `CSPP_BASE_URL` the one found in `CSPP_BASE_URL` will be used. If you don't specify a port in `CSPP_BASE_URL` the one found in `CSPP_PORT` will be used. If neither is specified, the default port `8080` will be used.
 
 ## Slack Specifics
 
