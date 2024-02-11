@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 
 	"github.com/fsnotify/fsnotify"
@@ -66,6 +67,32 @@ func init() {
 	setupDirectory(viper.GetString("processed_dir"))
 	setupDirectory(viper.GetString("uploads_dir"))
 	setupDirectory(viper.GetString("credentials_dir"))
+
+	validatePortVsBaseURL()
+
+}
+
+func validatePortVsBaseURL() {
+	log.Debugln("validatePortVsBaseURL")
+	baseurl := viper.GetString("base_url")
+	port := viper.GetString("port")
+	if baseurl != "" && port != "" {
+		parsedURL, err := url.Parse(baseurl)
+		if err != nil {
+			log.Errorln("Error parsing base URL:", err)
+			os.Exit(1)
+		}
+		baseport := parsedURL.Port()
+		if baseport == "" && port != "" {
+			return
+		}
+		if baseport != port {
+			viper.Set("port", baseport)
+			if port != "8080" {
+				log.Infoln("CSPP_PORT overridden by value specified in CSPP_BASE_URL.")
+			}
+		}
+	}
 }
 
 func main() {
