@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: CSPP API
+  version: 1.0.0
+  description: API for managing uploads and API key operations in the CSPP application.
+servers:
+  - url: http://localhost:8080
+paths:
+  /upload:
+    post:
+      summary: Upload an image with an optional caption
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                caption:
+                  type: string
+      responses:
+        '200':
+          description: Upload successful
+        '400':
+          description: Unable to parse form or get image
+        '500':
+          description: Internal server error during the upload process
+
+  /api:
+    post:
+      summary: Handle API key post operations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyRequest'
+      responses:
+        '200':
+          description: API key operation successful
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Handle API key deletion
+      responses:
+        '200':
+          description: API key successfully revoked
+        '401':
+          description: Unauthorized
+
+  /usage:
+    get:
+      summary: Get usage instructions
+      responses:
+        '200':
+          description: Usage instructions retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  schemas:
+    ApiKeyRequest:
+      type: object
+      properties:
+        SlackId:
+          type: string
+          description: Slack ID associated with the API key request
+
