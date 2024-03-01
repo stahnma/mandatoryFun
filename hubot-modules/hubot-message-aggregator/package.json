@@ -1,0 +1,36 @@
+{
+  "name": "hubot-message-aggregator",
+  "version": "0.0.1",
+  "description": "Aggreate message into a single channel based upon an emoji reaction. (such as thanks)",
+  "main": "index.js",
+  "scripts": {
+    "test": "EXPRESS_PORT=9012 mocha  --verbose --exit \"test/**/*.*\" --reporter spec",
+    "lint": "jshint src/*.js test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stahnma/mandatoryFun/hubot-modules/hubot-message-aggregator"
+  },
+  "keywords": [
+    "thanks",
+    "gratitude",
+    "hubot",
+    "reactions",
+    "emoji"
+  ],
+  "author": "stahnma",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "hubot-test-helper": "^1.9.0",
+    "js-beautify": "^1.14.3",
+    "jshint": "^2.13.4",
+    "matchdep": "^2.0.0",
+    "mocha": "^10.0.0",
+    "sinon": "^14.0.0",
+    "sinon-chai": "^3.7.0"
+  },
+  "dependencies": {
+    "@slack/web-api": "^7.0.2"
+  }
+}
