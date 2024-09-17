@@ -128,6 +128,8 @@ func processWebHook(c *gin.Context) {
 	}
 
 	msg := setMessageSuffix(jresp)
+	// create a link for the zoom meeting in the message
+	msg = msg + " [Zoom Meeting](https://zoom.us/j/" + jresp.Payload.Object.ID + ")"
 	dispatchMessage(msg)
 }
 
