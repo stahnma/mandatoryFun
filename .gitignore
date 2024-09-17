@@ -1,8 +1,16 @@
+# Creds
 *.creds
-.env
 .environment
+environment
+
+# Generated stuff
 bin
 config
 data
-environment
 image.png
+public
+*.tar.gz
+
+# Node projects
+package-lock.json
+node_modules
