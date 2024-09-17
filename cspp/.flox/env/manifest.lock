@@ -1,0 +1,398 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "fortune": {
+        "pkg-path": "fortune"
+      },
+      "gnumake": {
+        "pkg-path": "gnumake"
+      },
+      "go": {
+        "pkg-path": "go"
+      }
+    },
+    "vars": {},
+    "hook": {},
+    "profile": {},
+    "options": {
+      "systems": [
+        "aarch64-darwin",
+        "aarch64-linux",
+        "x86_64-darwin",
+        "x86_64-linux"
+      ],
+      "allow": {
+        "licenses": []
+      },
+      "semver": {}
+    },
+    "services": {},
+    "build": {}
+  },
+  "packages": [
+    {
+      "attr_path": "fortune",
+      "broken": false,
+      "derivation": "/nix/store/hmp1wjkp2miz06rfs3c7j25xaxqk49vy-fortune-mod-3.22.0.drv",
+      "description": "Program that displays a pseudorandom message from a database of quotations",
+      "install_id": "fortune",
+      "license": "BSD-4-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "fortune-mod-3.22.0",
+      "pname": "fortune",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "mod-3.22.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/dgsibc1mxn219mzaxgx6kr8sbdl0w1g1-fortune-mod-3.22.0"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "fortune",
+      "broken": false,
+      "derivation": "/nix/store/svld6g6k10j1vpm36l6p530r4sphqq96-fortune-mod-3.22.0.drv",
+      "description": "Program that displays a pseudorandom message from a database of quotations",
+      "install_id": "fortune",
+      "license": "BSD-4-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "fortune-mod-3.22.0",
+      "pname": "fortune",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "mod-3.22.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/qy2nr3fymx8pl0zbyppkq1wn8k26f35k-fortune-mod-3.22.0"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "fortune",
+      "broken": false,
+      "derivation": "/nix/store/ajy8jyda7w3hbqk5bwk5z1k2b5gpwapa-fortune-mod-3.22.0.drv",
+      "description": "Program that displays a pseudorandom message from a database of quotations",
+      "install_id": "fortune",
+      "license": "BSD-4-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "fortune-mod-3.22.0",
+      "pname": "fortune",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "mod-3.22.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/xsqsziiyjb7v6qhg5vq8ndii5vivrfy9-fortune-mod-3.22.0"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "fortune",
+      "broken": false,
+      "derivation": "/nix/store/vmqjf9wb5h37qn2jh0phwgq28n64jm5w-fortune-mod-3.22.0.drv",
+      "description": "Program that displays a pseudorandom message from a database of quotations",
+      "install_id": "fortune",
+      "license": "BSD-4-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "fortune-mod-3.22.0",
+      "pname": "fortune",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "mod-3.22.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/d456c57qc6w0kzl3cmcqm0sd69c49fl8-fortune-mod-3.22.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gnumake",
+      "broken": false,
+      "derivation": "/nix/store/sf5xahlr9cbk6sn3n954z3wym9q9fnj5-gnumake-4.4.1.drv",
+      "description": "Tool to control the generation of non-source files from sources",
+      "install_id": "gnumake",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "gnumake-4.4.1",
+      "pname": "gnumake",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "4.4.1",
+      "outputs_to_install": [
+        "out",
+        "man"
+      ],
+      "outputs": {
+        "info": "/nix/store/j755wklynl70bsffsmc72rqm0fg4y4dh-gnumake-4.4.1-info",
+        "man": "/nix/store/slxjfzk0mi14ffhiry1kx635yi3hrdsg-gnumake-4.4.1-man",
+        "out": "/nix/store/6mcdimq65bpmk4ccsbwk8zqqv0w57xki-gnumake-4.4.1"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gnumake",
+      "broken": false,
+      "derivation": "/nix/store/rgcvj9sy4bgyabdmg0jdmyrgb9jqwlpf-gnumake-4.4.1.drv",
+      "description": "Tool to control the generation of non-source files from sources",
+      "install_id": "gnumake",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "gnumake-4.4.1",
+      "pname": "gnumake",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "4.4.1",
+      "outputs_to_install": [
+        "out",
+        "man"
+      ],
+      "outputs": {
+        "debug": "/nix/store/srjsvl0v6q5rr29ihsm8qad1mjdh5qv4-gnumake-4.4.1-debug",
+        "info": "/nix/store/qzd3k2d7f2gwz8cmvz3ddmxsvh6ax65b-gnumake-4.4.1-info",
+        "man": "/nix/store/yy4yzw27p2iw8vqhhqjw5dg2whl95dx0-gnumake-4.4.1-man",
+        "out": "/nix/store/b9hsc0cxnjpgr0ni8zjfa8yfx9k9icyf-gnumake-4.4.1"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gnumake",
+      "broken": false,
+      "derivation": "/nix/store/j4zqbdgybhbwq9lgndy9v5n7j0p3avd1-gnumake-4.4.1.drv",
+      "description": "Tool to control the generation of non-source files from sources",
+      "install_id": "gnumake",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "gnumake-4.4.1",
+      "pname": "gnumake",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "4.4.1",
+      "outputs_to_install": [
+        "out",
+        "man"
+      ],
+      "outputs": {
+        "info": "/nix/store/5c2p60izk67sjlf86c1sp7pzpjh3qw8i-gnumake-4.4.1-info",
+        "man": "/nix/store/g3pmxslr6wpyw5pzarjc5rz8imh0wkx0-gnumake-4.4.1-man",
+        "out": "/nix/store/jzc62mfpsqx2k1ncmqs5awd7c1511hf3-gnumake-4.4.1"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gnumake",
+      "broken": false,
+      "derivation": "/nix/store/md9n6zgk7qnqv2ib4dnsy4rqnf91dqam-gnumake-4.4.1.drv",
+      "description": "Tool to control the generation of non-source files from sources",
+      "install_id": "gnumake",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "gnumake-4.4.1",
+      "pname": "gnumake",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "4.4.1",
+      "outputs_to_install": [
+        "out",
+        "man"
+      ],
+      "outputs": {
+        "debug": "/nix/store/idisl8srk1khjm4jhmikqwiacy5gzb2p-gnumake-4.4.1-debug",
+        "info": "/nix/store/y1fmi86h3mr58s3yxjm65c3nnf5l5p9r-gnumake-4.4.1-info",
+        "man": "/nix/store/swbhqvfjkrk0xqqnbhax93psq8n1gynr-gnumake-4.4.1-man",
+        "out": "/nix/store/09vbil20hj3gn9lb3djvbglyki9jr3i6-gnumake-4.4.1"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/x1p2gf1jcqn29l4agdqrb0w09rib7w3m-go-1.22.7.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "go-1.22.7",
+      "pname": "go",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.22.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/rfcwglhhspqx5v5h0sl4b3py14i6vpxa-go-1.22.7"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/qk95aryv3n1mhmk0lxf55sg9yr0l6138-go-1.22.7.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "go-1.22.7",
+      "pname": "go",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.22.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/64z59pb0ss407rbv1fcvq0ynngrwfa6k-go-1.22.7"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/4bjrs6k4a0xjyy5zanbc8igv0cffsi0a-go-1.22.7.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "go-1.22.7",
+      "pname": "go",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.22.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/r8199g59rmp6ac0lnx86fpk57fbxc3bk-go-1.22.7"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/gp0ma9f4n4nxmgbgl1g65kvlf05cl22y-go-1.22.7.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "name": "go-1.22.7",
+      "pname": "go",
+      "rev": "345c263f2f53a3710abe117f28a5cb86d0ba4059",
+      "rev_count": 680873,
+      "rev_date": "2024-09-13T16:03:24Z",
+      "scrape_date": "2024-09-16T03:14:12Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.22.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/chzgk756zb2cqlzbjr86m0lfxi63cdfy-go-1.22.7"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}
