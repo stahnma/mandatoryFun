@@ -1,7 +1,6 @@
 *.creds
 .env
 .environment
-.flox
 bin
 config
 data
