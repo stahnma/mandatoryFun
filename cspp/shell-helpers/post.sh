@@ -1,6 +1,11 @@
-#curl -X POST -F "image=@/path/to/your/image.jpg" -F "caption=OptionalCaption" http://localhost:8080/upload
+#!/usr/bin/env bash
 
-#file=`ls ~/Desktop/*.png ~/Desktop/*.jpeg |sort -R |tail -1`
+# Development
+URI=http://localhost:7171
+# Produciton
+# URI=https://cspp.mandatoryfun.dev/upload
+
+
 if [ -z "$1" ]; then
 	echo "Usage: $0 <image file> <caption>"
 	exit 1
@@ -16,6 +21,5 @@ curl -X POST \
   -F "image=@$file" \
   -F "caption=$caption"  \
   -H "X-API-KEY: $API_KEY" \
-http://localhost:7171/upload
-
+$URI
 
