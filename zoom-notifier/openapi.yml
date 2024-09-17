@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: Zoom Notifier API
+  description: API for managing Zoom meeting notifications
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /notify:
+    post:
+      summary: Send a Zoom meeting notification
+      description: Sends a notification about an upcoming Zoom meeting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        '200':
+          description: Notification sent successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /health:
+    get:
+      summary: Check API health
+      description: Returns the health status of the API
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required:
+        - topic
+        - start_time
+        - duration
+        - join_url
+      properties:
+        topic:
+          type: string
+          description: The topic or name of the Zoom meeting
+        start_time:
+          type: string
+          format: date-time
+          description: The start time of the meeting in ISO 8601 format
+        duration:
+          type: integer
+          description: The duration of the meeting in minutes
+        join_url:
+          type: string
+          format: uri
+          description: The URL to join the Zoom meeting
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        version:
+          type: string

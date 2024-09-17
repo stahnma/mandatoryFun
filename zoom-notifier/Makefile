@@ -43,3 +43,7 @@ install: build
 
  
 platforms: mac linux
+
+
+apidoc:
+	redoc-cli bundle openapi.yml -o index.html
