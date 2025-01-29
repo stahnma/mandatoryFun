@@ -25,7 +25,6 @@
         "pkg-path": "redoc-cli"
       }
     },
-    "vars": {},
     "hook": {},
     "profile": {},
     "options": {
@@ -39,9 +38,7 @@
         "licenses": []
       },
       "semver": {}
-    },
-    "services": {},
-    "build": {}
+    }
   },
   "packages": [
     {
