@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +14,12 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+)
+
+var (
+	version   = "dev"  // Default to "dev" if not set
+	commit    = "none" // Default to "none" if not set
+	buildDate = "unknown"
 )
 
 type ZoomWebhook struct {
@@ -157,7 +164,7 @@ func dispatchMessage(msg string) {
 	}
 }
 
-func init() {
+func inititalize() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
 
@@ -247,6 +254,17 @@ func init() {
 }
 
 func main() {
+
+	// Define a --version flag
+	showVersion := flag.Bool("version", false, "Show version information")
+	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("Version: %s\nCommit: %s\nBuild Date: %s\n", version, commit, buildDate)
+		return
+	}
+
+	inititalize()
 
 	router := gin.Default()
 	router.POST("/", processWebHook)
