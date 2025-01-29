@@ -134,11 +134,45 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 
+	meetingId := jresp.Payload.Object.ID
+
 	msg := setMessageSuffix(jresp)
 	// create a link for the zoom meeting in the message
-	msg = msg + " [Zoom Meeting](https://zoom.us/j/" + jresp.Payload.Object.ID + ")"
+	msg = msg + " [Zoom Meeting](https://zoom.us/j/" + meetingId + ")"
+	/* if the proper credentials are available, put a link to join in the message
+	if they are not, just use text and skip the meeting id. */
+	// check if proper credentials are available
+	/* looking for
+		These variables are not the same as the onse used for webhook receiver, as
+		this is a different zoom application that has API access.
+
+		To enable this feature, you must set the following environment variables:
+		ZOOM_API_ENABLE=1
+	  ZOOM_API_CLIENT_ID
+		ZOOM_API_CLIENT_SECRET
+		ZOOM_API_ACCOUNT_ID
+	*/
+	if os.Getenv("ZOOM_API_ENABLE") == "1" {
+		// Get secret from the zoom API so we can get the meeting details
+		// Check to see that ZOOM_API_CLIENT_ID, ZOOM_API_CLIENT_SECRET, and ZOOM_API_ACCOUNT_ID are set
+		if os.Getenv("ZOOM_API_CLIENT_ID") != "" && os.Getenv("ZOOM_API_CLIENT_SECRET") != "" && os.Getenv("ZOOM_API_ACCOUNT_ID") != "" {
+			// Get the secret
+			joinurl := callZoomApi(meetingId)
+			log.Debugln("Join URL: " + joinurl)
+			fmt.Println("This feature is not yet implemented.")
+		} else {
+			log.Errorln("ZOOM_API environment credentials are not set. Skipping.")
+		}
+	}
+
 	dispatchMessage(msg)
 }
+
+/*
+func getZoomAPISecret() (string, error) {
+
+}
+*/
 
 func dispatchMessage(msg string) {
 
@@ -174,6 +208,7 @@ func inititalize() {
 	viper.SetDefault("slack_enable", "true")
 	viper.SetDefault("irc_enable", "false")
 	viper.SetDefault("msg_suffix", "the zoom meeting.")
+	viper.SetDefault("zoom_api_enable", "false")
 
 	viper.BindEnv("port", "ZOOMWH_PORT")
 	viper.BindEnv("slack_enable", "ZOOMWH_SLACK_ENABLE")
@@ -184,6 +219,32 @@ func inititalize() {
 		log.Errorln("You must set ZOOM_SECRET environment variable.")
 	} else {
 		viper.BindEnv("zoom_secret", "ZOOM_SECRET")
+	}
+
+	// Zoom API Specifics
+	viper.GetString("zoom_api_enable")
+	if value := os.Getenv("ZOOM_API_ENABLE"); value == "false" {
+		log.Infoln("Zoom API is disabled.")
+		viper.Set("zoom_api_enable", "false")
+	} else {
+		viper.MustBindEnv("zoom_api_client_id", "ZOOM_API_CLIENT_ID")
+		zoom_api_client_id := viper.GetString("zoom_api_client_id")
+		if zoom_api_client_id == "" {
+			log.Errorln("You must set ZOOM_API_CLIENT_ID environment variable if ZOOM_API_ENABLE=true.")
+			bugout = true
+		}
+		viper.MustBindEnv("zoom_api_client_secret", "ZOOM_API_CLIENT_SECRET")
+		zoom_api_client_secret := viper.GetString("zoom_api_client_secret")
+		if zoom_api_client_secret == "" {
+			log.Errorln("You must set ZOOM_API_CLIENT_SECRET environment variable if ZOOM_API_ENABLE=true.")
+			bugout = true
+		}
+		viper.MustBindEnv("zoom_api_account_id", "ZOOM_API_ACCOUNT_ID")
+		zoom_api_account_id := viper.GetString("zoom_api_account_id")
+		if zoom_api_account_id == "" {
+			log.Errorln("You must set ZOOM_API_ACCOUNT_ID environment variable if ZOOM_API_ENABLE=true.")
+			bugout = true
+		}
 	}
 
 	// Slack Specifics
@@ -255,7 +316,7 @@ func inititalize() {
 
 func main() {
 
-	// Define a --version flag
+	// version flag invoked
 	showVersion := flag.Bool("version", false, "Show version information")
 	flag.Parse()
 
