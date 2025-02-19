@@ -138,7 +138,6 @@ func processWebHook(c *gin.Context) {
 
 	msg := setMessageSuffix(jresp)
 	// create a link for the zoom meeting in the message
-	msg = msg + " [Zoom Meeting](https://zoom.us/j/" + meetingId + ")"
 	/* if the proper credentials are available, put a link to join in the message
 	if they are not, just use text and skip the meeting id. */
 	// check if proper credentials are available
@@ -157,14 +156,21 @@ func processWebHook(c *gin.Context) {
 		// Check to see that ZOOM_API_CLIENT_ID, ZOOM_API_CLIENT_SECRET, and ZOOM_API_ACCOUNT_ID are set
 		if os.Getenv("ZOOM_API_CLIENT_ID") != "" && os.Getenv("ZOOM_API_CLIENT_SECRET") != "" && os.Getenv("ZOOM_API_ACCOUNT_ID") != "" {
 			// Get the secret
-			joinurl := callZoomApi(meetingId)
-			log.Debugln("Join URL: " + joinurl)
-			fmt.Println("This feature is not yet implemented.")
+			// TODO make the link rich text or use slack cards or something
+			// msg = msg + " [Zoom Meeting](https://zoom.us/j/" + meetingId + ")"
+			log.Debugln(meetingId)
+			/*	joinurl := callZoomApi(meetingId)
+				log.Debugln("Join URL: " + joinurl)
+				//msg = msg + "https://zoom.us/j/" + meetingId + "/" + joinurl
+				//			fmt.Println("This feature is not yet implemented.")
+				msg = msg + joinurl
+			*/
 		} else {
+			// This should be unreachable code, but it's there for debugging and defense.
 			log.Errorln("ZOOM_API environment credentials are not set. Skipping.")
 		}
 	}
-
+	log.Debugln("About to dispatch Message: " + msg)
 	dispatchMessage(msg)
 }
 
@@ -222,9 +228,9 @@ func inititalize() {
 	}
 
 	// Zoom API Specifics
-	viper.GetString("zoom_api_enable")
-	if value := os.Getenv("ZOOM_API_ENABLE"); value == "false" {
-		log.Infoln("Zoom API is disabled.")
+	zoomApiEnabled := viper.GetBool("zoom_api_enable")
+	if zoomApiEnabled == false {
+		log.Infoln("Zoom Web API is disabled. Disabling active meeting links and quieries")
 		viper.Set("zoom_api_enable", "false")
 	} else {
 		viper.MustBindEnv("zoom_api_client_id", "ZOOM_API_CLIENT_ID")
@@ -332,5 +338,7 @@ func main() {
 	port := viper.GetString("port")
 	serverstring := "localhost:" + port
 	log.Infoln("Listening on " + serverstring)
+	log.Debugln("Working on Zoom API call")
+	fmt.Println(callZoomApi("6705648745"))
 	router.Run(serverstring)
 }

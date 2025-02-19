@@ -7,10 +7,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 )
 
 // Zoom API token URL
@@ -28,9 +29,17 @@ type ZoomTokenResponse struct {
 
 // Function to get a Zoom API access token
 func GetZoomAccessToken() (string, error) {
-	clientID := viper.GetString("ZOOM_API_CLIENT_ID")
-	clientSecret := viper.GetString("ZOOM_API_CLIENT_SECRET")
-	accountID := viper.GetString("ZOOM_API_ACCOUNT_ID")
+
+	//TODO read these from Viper not os
+	clientID := os.Getenv("ZOOM_API_CLIENT_ID")
+	clientSecret := os.Getenv("ZOOM_API_CLIENT_SECRET")
+	accountID := os.Getenv("ZOOM_API_ACCOUNT_ID")
+
+	log.Debugln("(GetZoomAccessToken)")
+	log.Debugln("clientID: ", clientID)
+	log.Debugln("clientSecret: ", clientSecret)
+	log.Debugln("accountID: ", accountID)
+
 	// Encode client credentials in Base64
 	authString := fmt.Sprintf("%s:%s", clientID, clientSecret)
 	authEncoded := base64.StdEncoding.EncodeToString([]byte(authString))
@@ -99,12 +108,12 @@ func getMeetingJoinLink(meetingID string, token string) (string, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&zoomResponse); err != nil {
 		return "", fmt.Errorf("failed to decode response: %w", err)
 	}
-
 	return zoomResponse.JoinURL, nil
 }
 
 func callZoomApi(meeting_id string) (joinuri string) {
 	// Fetch access token
+	log.Debugln("(callZoomApi) Calling GetZoomAccessToken")
 	token, err := GetZoomAccessToken()
 	log.Debugln("meeting_id: ", meeting_id)
 	if err != nil {
@@ -112,7 +121,7 @@ func callZoomApi(meeting_id string) (joinuri string) {
 		return
 	}
 
-	log.Debugln("Zoom Access Token: %s\n", token)
+	log.Debugln("(callZoomApi) Zoom Access Token: %s\n", token)
 	joinuri, err = getMeetingJoinLink(meeting_id, token)
 
 	return joinuri
