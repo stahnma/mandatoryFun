@@ -83,7 +83,7 @@ func zoomCrcValidation(jresp ZoomWebhook) (bool, ChallengeResponse) {
 func filterMeeting(jresp ZoomWebhook) bool {
 	// If the meeting is outside the topic scope, just ignore.
 	name := viper.GetString("meeting_name")
-	log.Debugln("applyMeetingFilters) Topic " + jresp.Payload.Object.Topic)
+	log.Debugln("(applyMeetingFilters) Topic " + jresp.Payload.Object.Topic)
 	if name != jresp.Payload.Object.Topic && name != "" {
 		log.Infoln("Received hook but dropping due to topic being filtered.")
 		log.Debugln("(applyMeetingFilter) Hook had topic '" + jresp.Payload.Object.Topic + "'")
