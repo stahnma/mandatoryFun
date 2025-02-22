@@ -111,18 +111,22 @@ func getMeetingJoinLink(meetingID string, token string) (string, error) {
 	return zoomResponse.JoinURL, nil
 }
 
-func callZoomApi(meeting_id string) (joinuri string) {
-	// Fetch access token
+func callZoomAPI(meeting_id string) (joinuri string) {
 	log.Debugln("(callZoomApi) Calling GetZoomAccessToken")
-	token, err := GetZoomAccessToken()
 	log.Debugln("meeting_id: ", meeting_id)
+
+	// Fetch access token
+	token, err := GetZoomAccessToken()
+
 	if err != nil {
 		fmt.Printf("Error getting access token: %v\n", err)
 		return
 	}
 
-	log.Debugln("(callZoomApi) Zoom Access Token: %s\n", token)
+	// This is really long, should probably only show in trace mode
+	// log.Debugln("(callZoomAPI) Zoom Access Token: %s\n", token)
 	joinuri, err = getMeetingJoinLink(meeting_id, token)
+	log.Debugln("(callZoomAPI) joinuri: ", joinuri)
 
 	return joinuri
 }

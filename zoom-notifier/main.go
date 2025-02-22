@@ -6,8 +6,10 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -107,10 +109,58 @@ func setMessageSuffix(jresp ZoomWebhook) string {
 	return msg
 }
 
+// savePostRequestToFile writes the payload of a POST request to a file in the "hooks" directory.
+//
+// It operates silently, meaning it does not modify the HTTP response or interfere with request processing.
+// If the request is not a POST, has no body, or if an error occurs while reading or writing the body,
+// the function simply returns without taking any action.
+//
+// The request payload is saved in a file named "hook-<timestamp>.json", where <timestamp> follows the
+// "YYYYMMDD-HHMMSS.mmm" format to ensure unique filenames. The directory "hooks" is created if it does not exist.
+//
+// Parameters:
+//   - c: A *gin.Context representing the HTTP request and response context.
+//
+// Usage:
+//
+//	This function can be used as middleware in a Gin application to capture incoming POST request payloads.
+//
+// Example:
+//
+//	r := gin.Default()
+//	r.Use(savePostRequestToFile)  // Logs POST request bodies to the "hooks" directory
+//	r.POST("/hook", func(c *gin.Context) {
+//	    c.JSON(200, gin.H{"message": "Hook received"})
+//	})
+//	r.Run(":8080")
+func savePostRequestToFile(c *gin.Context) {
+	if c.Request.Method != "POST" {
+		return // Only process POST requests
+	}
+
+	// Read the request body
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil || len(body) == 0 {
+		return // If there's an error reading or body is empty, do nothing
+	}
+
+	// Ensure the hooks directory exists
+	hooksDir := "hooks"
+	_ = os.MkdirAll(hooksDir, 0755)
+
+	// Generate a timestamp-based filename
+	timestamp := time.Now().Format("20060102-150405.000")
+	filename := filepath.Join(hooksDir, "hook-"+timestamp+".json")
+
+	// Write the body to a file (ignoring errors to avoid interfering with request processing)
+	_ = os.WriteFile(filename, body, 0644)
+}
+
 func processWebHook(c *gin.Context) {
 
+	log.Debugln("(processWebHook) Processing incoming webhook. at " + time.Now().String())
 	if gin.IsDebugging() {
-		// log incoming request if in DEBUG mode
+		// savePostRequestToFile(c)
 	}
 	var jresp ZoomWebhook
 	if err := c.BindJSON(&jresp); err != nil {
@@ -134,53 +184,42 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 
-	meetingId := jresp.Payload.Object.ID
+	// If the event type is not a participant join or leave, ignore it.
+	if jresp.Event != "meeting.participant_joined" && jresp.Event != "meeting.participant_left" {
+		log.Debugln("(processWebHook) Ignoring event type: " + jresp.Event)
+		return
+	}
 
 	msg := setMessageSuffix(jresp)
-	// create a link for the zoom meeting in the message
-	/* if the proper credentials are available, put a link to join in the message
-	if they are not, just use text and skip the meeting id. */
-	// check if proper credentials are available
-	/* looking for
-		These variables are not the same as the onse used for webhook receiver, as
-		this is a different zoom application that has API access.
+	log.Debugln("About to dispatch Message: " + msg)
+	dispatchMessage(msg, jresp)
+}
 
-		To enable this feature, you must set the following environment variables:
-		ZOOM_API_ENABLE=1
-	  ZOOM_API_CLIENT_ID
-		ZOOM_API_CLIENT_SECRET
-		ZOOM_API_ACCOUNT_ID
+func getJoinURL(meetingId string) string {
+	/*
+			To enable this feature, you must set the following environment variables:
+			ZOOM_API_ENABLE=1
+		  ZOOM_API_CLIENT_ID
+			ZOOM_API_CLIENT_SECRET
+			ZOOM_API_ACCOUNT_ID
 	*/
+	joinurl := ""
 	if os.Getenv("ZOOM_API_ENABLE") == "1" {
 		// Get secret from the zoom API so we can get the meeting details
 		// Check to see that ZOOM_API_CLIENT_ID, ZOOM_API_CLIENT_SECRET, and ZOOM_API_ACCOUNT_ID are set
 		if os.Getenv("ZOOM_API_CLIENT_ID") != "" && os.Getenv("ZOOM_API_CLIENT_SECRET") != "" && os.Getenv("ZOOM_API_ACCOUNT_ID") != "" {
-			// Get the secret
-			// TODO make the link rich text or use slack cards or something
-			// msg = msg + " [Zoom Meeting](https://zoom.us/j/" + meetingId + ")"
 			log.Debugln(meetingId)
-			/*	joinurl := callZoomApi(meetingId)
-				log.Debugln("Join URL: " + joinurl)
-				//msg = msg + "https://zoom.us/j/" + meetingId + "/" + joinurl
-				//			fmt.Println("This feature is not yet implemented.")
-				msg = msg + joinurl
-			*/
+			joinurl := callZoomAPI(meetingId)
+			log.Debugln("Join URL: " + joinurl)
 		} else {
 			// This should be unreachable code, but it's there for debugging and defense.
 			log.Errorln("ZOOM_API environment credentials are not set. Skipping.")
 		}
 	}
-	log.Debugln("About to dispatch Message: " + msg)
-	dispatchMessage(msg)
+	return joinurl
 }
 
-/*
-func getZoomAPISecret() (string, error) {
-
-}
-*/
-
-func dispatchMessage(msg string) {
+func dispatchMessage(msg string, jresp ZoomWebhook) {
 
 	slack_enable := viper.GetString("slack_enable")
 	irc_enable := viper.GetString("irc_enable")
@@ -190,9 +229,8 @@ func dispatchMessage(msg string) {
 
 	if strings.ToLower(slack_enable) == "true" {
 		log.Debugln("(dispatchMessage) Sending a slack message")
-		parseAndSplitSlackHooks(msg)
+		parseAndSplitSlackHooks(msg, jresp)
 		sent = 1
-
 	}
 	if strings.ToLower(irc_enable) == "true" {
 		log.Debugln("(dispatchMessage) Sending an IRC message")
@@ -322,7 +360,6 @@ func inititalize() {
 
 func main() {
 
-	// version flag invoked
 	showVersion := flag.Bool("version", false, "Show version information")
 	flag.Parse()
 
@@ -338,7 +375,5 @@ func main() {
 	port := viper.GetString("port")
 	serverstring := "localhost:" + port
 	log.Infoln("Listening on " + serverstring)
-	log.Debugln("Working on Zoom API call")
-	fmt.Println(callZoomApi("6705648745"))
 	router.Run(serverstring)
 }
