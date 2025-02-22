@@ -266,11 +266,13 @@ func inititalize() {
 	}
 
 	// Zoom API Specifics
-	zoomApiEnabled := viper.GetBool("zoom_api_enable")
+	viper.BindEnv("ZOOM_API_ENABLE")
+	zoomApiEnabled := viper.GetBool("ZOOM_API_ENABLE")
 	if zoomApiEnabled == false {
 		log.Infoln("Zoom Web API is disabled. Disabling active meeting links and quieries")
 		viper.Set("zoom_api_enable", "false")
 	} else {
+		log.Infoln("Zoom Web API is enabled.")
 		viper.MustBindEnv("zoom_api_client_id", "ZOOM_API_CLIENT_ID")
 		zoom_api_client_id := viper.GetString("zoom_api_client_id")
 		if zoom_api_client_id == "" {

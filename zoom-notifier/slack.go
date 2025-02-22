@@ -33,6 +33,12 @@ func formatSlackMessage(msg string, jresp ZoomWebhook) string {
 	// Read in suffix, and make that the hot link
 	log.Debugln("XXXXXXX")
 	log.Debugln("(formatSlackMessage) msg is ", msg)
+	// return if ZOOM_API_ENABLE is not enabled
+	zae := viper.GetBool("zoom_api_enable")
+	log.Debugln("(formatSlackMessage) ZOOM_API_ENABLE zae is:", zae)
+	if !zae {
+		return msg
+	}
 	joinurl := callZoomAPI(jresp.Payload.Object.ID)
 	log.Debugln("(formatSlackMessage) The join URL is:", joinurl)
 
