@@ -6,8 +6,10 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -83,7 +85,7 @@ func zoomCrcValidation(jresp ZoomWebhook) (bool, ChallengeResponse) {
 func filterMeeting(jresp ZoomWebhook) bool {
 	// If the meeting is outside the topic scope, just ignore.
 	name := viper.GetString("meeting_name")
-	log.Debugln("applyMeetingFilters) Topic " + jresp.Payload.Object.Topic)
+	log.Debugln("(applyMeetingFilters) Topic " + jresp.Payload.Object.Topic)
 	if name != jresp.Payload.Object.Topic && name != "" {
 		log.Infoln("Received hook but dropping due to topic being filtered.")
 		log.Debugln("(applyMeetingFilter) Hook had topic '" + jresp.Payload.Object.Topic + "'")
@@ -107,10 +109,58 @@ func setMessageSuffix(jresp ZoomWebhook) string {
 	return msg
 }
 
+// savePostRequestToFile writes the payload of a POST request to a file in the "hooks" directory.
+//
+// It operates silently, meaning it does not modify the HTTP response or interfere with request processing.
+// If the request is not a POST, has no body, or if an error occurs while reading or writing the body,
+// the function simply returns without taking any action.
+//
+// The request payload is saved in a file named "hook-<timestamp>.json", where <timestamp> follows the
+// "YYYYMMDD-HHMMSS.mmm" format to ensure unique filenames. The directory "hooks" is created if it does not exist.
+//
+// Parameters:
+//   - c: A *gin.Context representing the HTTP request and response context.
+//
+// Usage:
+//
+//	This function can be used as middleware in a Gin application to capture incoming POST request payloads.
+//
+// Example:
+//
+//	r := gin.Default()
+//	r.Use(savePostRequestToFile)  // Logs POST request bodies to the "hooks" directory
+//	r.POST("/hook", func(c *gin.Context) {
+//	    c.JSON(200, gin.H{"message": "Hook received"})
+//	})
+//	r.Run(":8080")
+func savePostRequestToFile(c *gin.Context) {
+	if c.Request.Method != "POST" {
+		return // Only process POST requests
+	}
+
+	// Read the request body
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil || len(body) == 0 {
+		return // If there's an error reading or body is empty, do nothing
+	}
+
+	// Ensure the hooks directory exists
+	hooksDir := "hooks"
+	_ = os.MkdirAll(hooksDir, 0755)
+
+	// Generate a timestamp-based filename
+	timestamp := time.Now().Format("20060102-150405.000")
+	filename := filepath.Join(hooksDir, "hook-"+timestamp+".json")
+
+	// Write the body to a file (ignoring errors to avoid interfering with request processing)
+	_ = os.WriteFile(filename, body, 0644)
+}
+
 func processWebHook(c *gin.Context) {
 
+	log.Debugln("(processWebHook) Processing incoming webhook. at " + time.Now().String())
 	if gin.IsDebugging() {
-		// log incoming request if in DEBUG mode
+		// savePostRequestToFile(c)
 	}
 	var jresp ZoomWebhook
 	if err := c.BindJSON(&jresp); err != nil {
@@ -134,13 +184,42 @@ func processWebHook(c *gin.Context) {
 		return
 	}
 
+	// If the event type is not a participant join or leave, ignore it.
+	if jresp.Event != "meeting.participant_joined" && jresp.Event != "meeting.participant_left" {
+		log.Debugln("(processWebHook) Ignoring event type: " + jresp.Event)
+		return
+	}
+
 	msg := setMessageSuffix(jresp)
-	// create a link for the zoom meeting in the message
-	msg = msg + " [Zoom Meeting](https://zoom.us/j/" + jresp.Payload.Object.ID + ")"
-	dispatchMessage(msg)
+	log.Debugln("About to dispatch Message: " + msg)
+	dispatchMessage(msg, jresp)
 }
 
-func dispatchMessage(msg string) {
+func getJoinURL(meetingId string) string {
+	/*
+			To enable this feature, you must set the following environment variables:
+			ZOOM_API_ENABLE=1
+		  ZOOM_API_CLIENT_ID
+			ZOOM_API_CLIENT_SECRET
+			ZOOM_API_ACCOUNT_ID
+	*/
+	joinurl := ""
+	if os.Getenv("ZOOM_API_ENABLE") == "1" {
+		// Get secret from the zoom API so we can get the meeting details
+		// Check to see that ZOOM_API_CLIENT_ID, ZOOM_API_CLIENT_SECRET, and ZOOM_API_ACCOUNT_ID are set
+		if os.Getenv("ZOOM_API_CLIENT_ID") != "" && os.Getenv("ZOOM_API_CLIENT_SECRET") != "" && os.Getenv("ZOOM_API_ACCOUNT_ID") != "" {
+			log.Debugln(meetingId)
+			joinurl := callZoomAPI(meetingId)
+			log.Debugln("Join URL: " + joinurl)
+		} else {
+			// This should be unreachable code, but it's there for debugging and defense.
+			log.Errorln("ZOOM_API environment credentials are not set. Skipping.")
+		}
+	}
+	return joinurl
+}
+
+func dispatchMessage(msg string, jresp ZoomWebhook) {
 
 	slack_enable := viper.GetString("slack_enable")
 	irc_enable := viper.GetString("irc_enable")
@@ -150,9 +229,8 @@ func dispatchMessage(msg string) {
 
 	if strings.ToLower(slack_enable) == "true" {
 		log.Debugln("(dispatchMessage) Sending a slack message")
-		parseAndSplitSlackHooks(msg)
+		parseAndSplitSlackHooks(msg, jresp)
 		sent = 1
-
 	}
 	if strings.ToLower(irc_enable) == "true" {
 		log.Debugln("(dispatchMessage) Sending an IRC message")
@@ -174,6 +252,7 @@ func inititalize() {
 	viper.SetDefault("slack_enable", "true")
 	viper.SetDefault("irc_enable", "false")
 	viper.SetDefault("msg_suffix", "the zoom meeting.")
+	viper.SetDefault("zoom_api_enable", "false")
 
 	viper.BindEnv("port", "ZOOMWH_PORT")
 	viper.BindEnv("slack_enable", "ZOOMWH_SLACK_ENABLE")
@@ -184,6 +263,34 @@ func inititalize() {
 		log.Errorln("You must set ZOOM_SECRET environment variable.")
 	} else {
 		viper.BindEnv("zoom_secret", "ZOOM_SECRET")
+	}
+
+	// Zoom API Specifics
+	viper.BindEnv("ZOOM_API_ENABLE")
+	zoomApiEnabled := viper.GetBool("ZOOM_API_ENABLE")
+	if zoomApiEnabled == false {
+		log.Infoln("Zoom Web API is disabled. Disabling active meeting links and quieries")
+		viper.Set("zoom_api_enable", "false")
+	} else {
+		log.Infoln("Zoom Web API is enabled.")
+		viper.MustBindEnv("zoom_api_client_id", "ZOOM_API_CLIENT_ID")
+		zoom_api_client_id := viper.GetString("zoom_api_client_id")
+		if zoom_api_client_id == "" {
+			log.Errorln("You must set ZOOM_API_CLIENT_ID environment variable if ZOOM_API_ENABLE=true.")
+			bugout = true
+		}
+		viper.MustBindEnv("zoom_api_client_secret", "ZOOM_API_CLIENT_SECRET")
+		zoom_api_client_secret := viper.GetString("zoom_api_client_secret")
+		if zoom_api_client_secret == "" {
+			log.Errorln("You must set ZOOM_API_CLIENT_SECRET environment variable if ZOOM_API_ENABLE=true.")
+			bugout = true
+		}
+		viper.MustBindEnv("zoom_api_account_id", "ZOOM_API_ACCOUNT_ID")
+		zoom_api_account_id := viper.GetString("zoom_api_account_id")
+		if zoom_api_account_id == "" {
+			log.Errorln("You must set ZOOM_API_ACCOUNT_ID environment variable if ZOOM_API_ENABLE=true.")
+			bugout = true
+		}
 	}
 
 	// Slack Specifics
@@ -255,7 +362,6 @@ func inititalize() {
 
 func main() {
 
-	// Define a --version flag
 	showVersion := flag.Bool("version", false, "Show version information")
 	flag.Parse()
 

@@ -18,7 +18,7 @@ build: tidy
 	go build -ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.buildDate=$(BUILDDATE)" -o $(NAME) .
 
 clean:
-	rm -rf $(NAME) bin
+	rm -rf $(NAME) bin index.html
 
 linux-arm64: tidy
 	GOOS=linux GOARCH=arm64  go build -ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.buildDate=$(BUILDDATE)" -o bin/$(NAME).linux-arm64 .

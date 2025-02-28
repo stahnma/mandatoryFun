@@ -23,3 +23,17 @@ slack can be disabled -- yes
  Then, add mulitplexling slack displatch
  then clean up and document and test
  then add channel switcher stuff (cci bs to general and back, mute unmute maybe)
+
+
+slack slash command to query the meeting and status of the notifier
+Show routes and stuff
+Rename callZoomApi
+
+
+godoc
+document zoom api usage
+slack client with slash commands
+
+don't print message twice. -- this may be because multiple web hooks are coming in
+
+Have a debug mode to drop all web hook payloads in a directory
