@@ -1,0 +1,244 @@
+openapi: 3.0.3
+info:
+  title: Slumbler API
+  version: 1.0.0
+  description: RESTful API for managing, tagging, and searching links with metadata and expiration handling.
+servers:
+  - url: /v1
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      responses:
+        '200':
+          description: Prometheus metrics output
+
+  /links:
+    get:
+      summary: List all active links
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: A list of links
+    post:
+      summary: Add a new link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewLink'
+      responses:
+        '201':
+          description: Link added
+
+  /link/{id}:
+    get:
+      summary: Get link details (increments view count)
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+      responses:
+        '200':
+          description: Link object
+    put:
+      summary: Refresh metadata for a link
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+      responses:
+        '200':
+          description: Updated link object
+    patch:
+      summary: Unexpire a link
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expired]
+              properties:
+                expired:
+                  type: boolean
+      responses:
+        '200':
+          description: Link updated
+
+  /link/{id}/tags:
+    get:
+      summary: List tags for a link
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+      responses:
+        '200':
+          description: List of tags
+    post:
+      summary: Add one or more tags to a link
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Tags added
+
+  /link/{id}/tag/{tag_id}:
+    get:
+      summary: Get a specific tag on a link
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+        - $ref: '#/components/parameters/TagId'
+      responses:
+        '200':
+          description: Tag detail
+    delete:
+      summary: Remove a tag from a link
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+        - $ref: '#/components/parameters/TagId'
+      responses:
+        '204':
+          description: Tag removed
+    put:
+      summary: Update/reassign a tag
+      parameters:
+        - $ref: '#/components/parameters/LinkId'
+        - $ref: '#/components/parameters/TagId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Tag updated
+
+  /tags:
+    get:
+      summary: List all tags
+      responses:
+        '200':
+          description: List of tags
+
+  /tag/{tag_id}/links:
+    get:
+      summary: List all links with a specific tag
+      parameters:
+        - $ref: '#/components/parameters/TagId'
+      responses:
+        '200':
+          description: Links with this tag
+
+  /tag/{tag_id}/link/{link_id}:
+    get:
+      summary: Get specific link for tag
+      parameters:
+        - $ref: '#/components/parameters/TagId'
+        - $ref: '#/components/parameters/LinkId'
+      responses:
+        '200':
+          description: Link detail
+
+  /popular:
+    get:
+      summary: Most popular links
+      responses:
+        '200':
+          description: Popular links list
+
+  /recent:
+    get:
+      summary: Most recently added links
+      responses:
+        '200':
+          description: Recent links list
+
+  /popular-tags:
+    get:
+      summary: Most popular tags
+      responses:
+        '200':
+          description: Popular tags list
+
+  /recent-tags:
+    get:
+      summary: Most recently used tags
+      responses:
+        '200':
+          description: Recent tags list
+
+  /search:
+    get:
+      summary: Search links by tag/title/url/etc.
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Search results
+
+components:
+  parameters:
+    LinkId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    TagId:
+      name: tag_id
+      in: path
+      required: true
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        default: 30
+        maximum: 100
+  schemas:
+    NewLink:
+      type: object
+      required: [url, owner]
+      properties:
+        url:
+          type: string
+          format: uri
+        owner:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+
