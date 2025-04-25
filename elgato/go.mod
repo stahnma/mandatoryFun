@@ -1,6 +1,7 @@
 module github.com/stahnma/mandatoryFun/elgato
 
-go 1.21.4
+go 1.23.0
+
 toolchain go1.24.1
 
 require github.com/grandcat/zeroconf v1.0.0
