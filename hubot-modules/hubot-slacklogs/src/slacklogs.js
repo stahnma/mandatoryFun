@@ -1,32 +1,25 @@
 // Description:
-//   Store and retrieve quotes along with the author, submitter, and timestamp.
+//  Log your slack messages in jsonl format
 //
-// Commands:
-//   hubot "<quote>" -- <author> - Store a new quote along with your username.
-//   hubot wisdom - Responds with a random quote from the wisdom bank..
+// Configuration:
+//    HUBOT_SLACK_LOGS_FILE - absolute path to file where logs should be placed
 //
 // Author: stahnma
 //
-// Category: social
-
-const {
-  WebClient
-} = require('@slack/web-api');
-
+// Category: workflow
 const fs = require('fs');
 const path = require('path');
+const { WebClient } = require('@slack/web-api');
 
-// Capture env var
+// Config
 const logFilePath = process.env.HUBOT_SLACK_LOGS_FILE;
-let logStream = null;
+const slackToken = process.env.SLACK_BOT_TOKEN;
 
-// Prepare write stream if logging to file
+let logStream = null;
 if (logFilePath) {
   try {
-    // Ensure directory exists
     const dir = path.dirname(logFilePath);
     fs.mkdirSync(dir, { recursive: true });
-
     logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
     console.log(`[hubot-logger] Logging to file: ${logFilePath}`);
   } catch (err) {
@@ -34,27 +27,88 @@ if (logFilePath) {
   }
 }
 
+const slackClient = slackToken ? new WebClient(slackToken) : null;
+
+// In-memory cache for room name/type
+const roomCache = new Map();
+
+function getSlackRoomType(roomId) {
+  if (!roomId || typeof roomId !== 'string') return 'unknown';
+  if (roomId.startsWith('C')) return 'public_channel';
+  if (roomId.startsWith('G')) return 'private_channel';
+  if (roomId.startsWith('D')) return 'direct_message';
+  if (roomId.startsWith('Q')) return 'group_dm';
+  if (roomId.startsWith('T')) return 'external_dm';
+  return 'unknown';
+}
+
+async function getRoomInfo(roomId) {
+  const cached = roomCache.get(roomId);
+  const now = Date.now();
+
+  if (cached && now - cached.fetchedAt < 60 * 60 * 1000) {
+    return cached.info;
+  }
+
+  if (!slackClient || !roomId) {
+    return { name: null, type: getSlackRoomType(roomId) };
+  }
+
+  try {
+    const result = await slackClient.conversations.info({ channel: roomId });
+    const roomName = result.channel?.name || null;
+    const roomType = result.channel?.is_im
+      ? 'direct_message'
+      : result.channel?.is_private
+      ? 'private_channel'
+      : 'public_channel';
+
+    const info = { name: roomName, type: roomType };
+    roomCache.set(roomId, { info, fetchedAt: now });
+    return info;
+  } catch (err) {
+    console.error(`[hubot-logger] Failed to fetch room info for ${roomId}: ${err.message}`);
+    return { name: null, type: getSlackRoomType(roomId) };
+  }
+}
+
 module.exports = (robot) => {
+  if (robot.adapterName !== 'slack') {
+    console.log(`[hubot-logger] Adapter is '${robot.adapterName}', skipping Slack-specific logging.`);
+    return;
+  }
+
   robot.hear(/.*/, async (res) => {
-    const rawMessage = res.message.rawMessage;
+    const rawMessage = res?.message?.rawMessage;
+    const roomId = res.message.room;
 
-    const message = {
-      user: res.message.user.name,
-      userId: res.message.user.id,
-      text: res.message.text,
-      room: res.message.room,
-      timestamp: new Date().toISOString(),
-      slackTimestamp: rawMessage.ts,
-      threadTimestamp: rawMessage.thread_ts || null,
-      isThreadRoot: rawMessage.thread_ts ? rawMessage.thread_ts === rawMessage.ts : false,
-    };
+    if (!rawMessage || typeof rawMessage !== 'object' || !roomId) return;
 
-    const line = JSON.stringify(message);
+    try {
+      const roomInfo = await getRoomInfo(roomId);
 
-    if (logStream) {
-      logStream.write(line + '\n');
-    } else {
-      console.log(line);
+      const message = {
+        user: res.message.user.name,
+        userId: res.message.user.id,
+        text: res.message.text,
+        roomId: roomId,
+        roomName: roomInfo.name,
+        roomType: roomInfo.type,
+        timestamp: new Date().toISOString(),
+        slackTimestamp: rawMessage.ts || null,
+        threadTimestamp: rawMessage.thread_ts || null,
+        isThreadRoot: rawMessage.thread_ts ? rawMessage.thread_ts === rawMessage.ts : false,
+      };
+
+      const line = JSON.stringify(message);
+
+      if (logStream) {
+        logStream.write(line + '\n');
+      } else {
+        console.log(line);
+      }
+    } catch (err) {
+      console.error('[hubot-logger] Error while logging message:', err);
     }
   });
 };
