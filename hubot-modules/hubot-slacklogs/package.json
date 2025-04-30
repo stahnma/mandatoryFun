@@ -1,0 +1,31 @@
+{
+  "name": "hubot-slacklogs",
+  "version": "0.0.1",
+  "description": "Log what's happening in slack",
+  "main": "index.js",
+  "scripts": {
+    "test": "EXPRESS_PORT=9012 mocha  --extension mjs --verbose --exit \"test/**/*.*\" --reporter spec",
+    "lint": "jshint src/*.js test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stahnma/mandatoryFun/hubot-modules/hubot-slacklogs"
+  },
+  "keywords": [
+    "hubot",
+    "slack",
+    "logs"
+  ],
+  "author": "stahnma",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "hubot-mock-adapter": "^2.3.0",
+    "hubot-test-helper": "^1.9.0",
+    "mocha": "^10.4.0",
+    "sinon": "^17.0.1"
+  },
+  "dependencies": {
+    "@slack/web-api": "^7.9.1"
+  }
+}
