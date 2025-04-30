@@ -3,6 +3,7 @@
 //
 // Configuration:
 //    HUBOT_SLACK_LOGS_FILE - absolute path to file where logs should be placed
+//    HUBOT_SLACK_TOKEN - needed to use slack API for room lookups, etc
 //
 // Author: stahnma
 //
@@ -13,7 +14,7 @@ const { WebClient } = require('@slack/web-api');
 
 // Config
 const logFilePath = process.env.HUBOT_SLACK_LOGS_FILE;
-const slackToken = process.env.SLACK_BOT_TOKEN;
+const slackToken = process.env.HUBOT_SLACK_TOKEN;
 
 let logStream = null;
 if (logFilePath) {
