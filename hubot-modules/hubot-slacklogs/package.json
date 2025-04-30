@@ -1,8 +1,9 @@
 {
   "name": "hubot-slacklogs",
-  "version": "0.0.2",
-  "description": "Log what's happening in slack",
+  "version": "0.0.3",
+  "description": "Log what's happening in slack in jsonl format",
   "main": "index.js",
+  "homepage": "https://github.com/stahnma/mandatoryFun/tree/main/hubot-modules/hubot-slacklogs",
   "scripts": {
     "test": "EXPRESS_PORT=9012 mocha  --extension mjs --verbose --exit \"test/**/*.*\" --reporter spec",
     "lint": "jshint src/*.js test/*.js"
