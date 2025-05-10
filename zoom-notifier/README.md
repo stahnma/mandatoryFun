@@ -24,6 +24,20 @@ you must set
 
 `ZOOMWH_MEETING_NAME` only notify on a particular meeting name. Default is any/all. Filter is a literal string, not a regex.
 
+## API calls for more advanced messaging
+
+If you'd like your message to contain a hyperlink to the zoom meeting that includes the meetind ID and passcode (meaning a 1-click join), you have to have a full web api account with zoom. If you do, you can set the following environment variables.
+
+# Lookup Meeting Info
+
+| Key                     | Description                                                                                                     | Default |
+|------------------------|-----------------------------------------------------------------------------------------------------------------|---------|
+| ZOOM_API_ENABLE        | Whether or not to attempt to use this feature set.                                                              | false   |
+| ZOOM_API_ACCOUNT_ID    | ID of the ZOOM Account.                                                                                         | empty        |
+| ZOOM_API_CLIENT_ID     | Client ID of the ZOOM App you've created in the developer portal.                                               | empty        |
+| ZOOM_API_CLIENT_SECRET | Secret of the ZOOM App you've created in the developer portal.                                                  | empty        |
+| ZOOM_API_SECRET_TOKEN  | Token given to you after doing a POST to the ZOOM API to get a JWT token. This is used to authenticate with it. |  empty  |
+
 ## Slack Messaging
 `ZOOMWH_SLACK_ENABLE` should be set to 'true' if using this feature. It defaults to true.
 
