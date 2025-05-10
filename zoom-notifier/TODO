@@ -1,39 +1,15 @@
-* ENV Vars for all configuration
-* Document ENV vars
-* What to do if IRC and ZOOM settings are around?
-* Make documentation env vars be a table
-* Separate slack sender out like IRC sender (but default to true)
-* Filter
-Bugs
 
 
-- CRC is showing up as a join/leave event
-- IRC configuration not working/loading
-- Slack configuration might be working, but need to check on it more
+chore
+---
+* Rename callZoomApi
+* Show routes and stuff
+* Have a debug mode to drop all web hook payloads in a directory
 
 
-
-if slack notificaiton are enabled, a webhook uri is required -- yes
-slack can be disabled -- yes
-
-
-
-
- still need to verify all things CRC
- Then, add mulitplexling slack displatch
- then clean up and document and test
- then add channel switcher stuff (cci bs to general and back, mute unmute maybe)
-
-
-slack slash command to query the meeting and status of the notifier
-Show routes and stuff
-Rename callZoomApi
-
-
-godoc
-document zoom api usage
-slack client with slash commands
-
-don't print message twice. -- this may be because multiple web hooks are coming in
-
-Have a debug mode to drop all web hook payloads in a directory
+enhancements
+---
+* godoc
+* document zoom api usage
+* slack client with slash commands
+* slack slash command to query the meeting and status of the notifier
