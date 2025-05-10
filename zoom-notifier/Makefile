@@ -44,7 +44,3 @@ install: build
 	sudo install -p -m0755 $(NAME) /usr/local/bin
 
 platforms: mac linux
-
-apidoc:
-	redoc-cli bundle openapi.yml -o index.html
-
