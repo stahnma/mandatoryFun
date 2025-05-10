@@ -20,9 +20,6 @@
       },
       "nodejs": {
         "pkg-path": "nodejs"
-      },
-      "redoc-cli": {
-        "pkg-path": "redoc-cli"
       }
     },
     "hook": {},
@@ -33,11 +30,7 @@
         "aarch64-linux",
         "x86_64-darwin",
         "x86_64-linux"
-      ],
-      "allow": {
-        "licenses": []
-      },
-      "semver": {}
+      ]
     }
   },
   "packages": [
@@ -60,10 +53,10 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "perl5.38.0-ack-3.7.0",
+      "version": "3.7.0",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "man": "/nix/store/vb11zqssxn1n4didd3453ghcx1n02d3s-perl5.38.0-ack-3.7.0-man",
@@ -92,10 +85,10 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "perl5.38.0-ack-3.7.0",
+      "version": "3.7.0",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "man": "/nix/store/0gs7v7p52lmygxglgyy53669vv4iw6rj-perl5.38.0-ack-3.7.0-man",
@@ -124,10 +117,10 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "perl5.38.0-ack-3.7.0",
+      "version": "3.7.0",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "man": "/nix/store/hjvl1v79hscllpa42zzan9jrijdxzl7m-perl5.38.0-ack-3.7.0-man",
@@ -156,10 +149,10 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "perl5.38.0-ack-3.7.0",
+      "version": "3.7.0",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "man": "/nix/store/gl9xs3fbr20fqddzyrmhivkhw0vld7bd-perl5.38.0-ack-3.7.0-man",
@@ -188,7 +181,7 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "mod-3.20.0",
+      "version": "3.20.0",
       "outputs_to_install": [
         "out"
       ],
@@ -218,7 +211,7 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "mod-3.20.0",
+      "version": "3.20.0",
       "outputs_to_install": [
         "out"
       ],
@@ -248,7 +241,7 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "mod-3.20.0",
+      "version": "3.20.0",
       "outputs_to_install": [
         "out"
       ],
@@ -278,7 +271,7 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "mod-3.20.0",
+      "version": "3.20.0",
       "outputs_to_install": [
         "out"
       ],
@@ -310,8 +303,8 @@
       "unfree": false,
       "version": "4.4.1",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "info": "/nix/store/rxxkcpkycxs9scvwh9kxgxlxfilc8xn7-gnumake-4.4.1-info",
@@ -343,8 +336,8 @@
       "unfree": false,
       "version": "4.4.1",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "debug": "/nix/store/mj4xnynwiskbzy48r626vayf8mh4na1v-gnumake-4.4.1-debug",
@@ -377,8 +370,8 @@
       "unfree": false,
       "version": "4.4.1",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "info": "/nix/store/64hcz3cdi6abr9ia36grdbjzp9gf75kz-gnumake-4.4.1-info",
@@ -410,8 +403,8 @@
       "unfree": false,
       "version": "4.4.1",
       "outputs_to_install": [
-        "out",
-        "man"
+        "man",
+        "out"
       ],
       "outputs": {
         "debug": "/nix/store/5pj1w17i19v18x1fz5pjmbyb95qs4yx4-gnumake-4.4.1-debug",
@@ -806,126 +799,6 @@
       "outputs": {
         "libv8": "/nix/store/d0iajflf9crbz43fd07q9vszyzr979qq-nodejs-18.18.2-libv8",
         "out": "/nix/store/4bgg8j8275adawqbc5rkm4fv48dgg2i3-nodejs-18.18.2"
-      },
-      "system": "x86_64-linux",
-      "group": "toplevel",
-      "priority": 5
-    },
-    {
-      "attr_path": "redoc-cli",
-      "broken": false,
-      "derivation": "/nix/store/5vncx9l6vrc4dcasc9jlwysfpfw5a3pw-redoc-cli-0.13.21.drv",
-      "description": "OpenAPI/Swagger-generated API Reference Documentation",
-      "install_id": "redoc-cli",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "name": "redoc-cli-0.13.21",
-      "pname": "redoc-cli",
-      "rev": "91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "rev_count": 555097,
-      "rev_date": "2023-12-01T13:12:07Z",
-      "scrape_date": "2024-08-15T23:08:02Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.13.21",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/1zkgp7jmcjy623rplczbhzkrkan69yqq-redoc-cli-0.13.21"
-      },
-      "system": "aarch64-darwin",
-      "group": "toplevel",
-      "priority": 5
-    },
-    {
-      "attr_path": "redoc-cli",
-      "broken": false,
-      "derivation": "/nix/store/65kbyj9wny1ygzizl5b06qz8yc76im2w-redoc-cli-0.13.21.drv",
-      "description": "OpenAPI/Swagger-generated API Reference Documentation",
-      "install_id": "redoc-cli",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "name": "redoc-cli-0.13.21",
-      "pname": "redoc-cli",
-      "rev": "91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "rev_count": 555097,
-      "rev_date": "2023-12-01T13:12:07Z",
-      "scrape_date": "2024-08-15T23:08:02Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.13.21",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/fgq5vyiln8pbvffmb2bjcy6h55c6b19q-redoc-cli-0.13.21"
-      },
-      "system": "aarch64-linux",
-      "group": "toplevel",
-      "priority": 5
-    },
-    {
-      "attr_path": "redoc-cli",
-      "broken": false,
-      "derivation": "/nix/store/rvj9anb2x330sjh1ydn42hrf4xbi0z2d-redoc-cli-0.13.21.drv",
-      "description": "OpenAPI/Swagger-generated API Reference Documentation",
-      "install_id": "redoc-cli",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "name": "redoc-cli-0.13.21",
-      "pname": "redoc-cli",
-      "rev": "91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "rev_count": 555097,
-      "rev_date": "2023-12-01T13:12:07Z",
-      "scrape_date": "2024-08-15T23:08:02Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.13.21",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/k261lzbiqsf9qakf74gg71zi2cqs49il-redoc-cli-0.13.21"
-      },
-      "system": "x86_64-darwin",
-      "group": "toplevel",
-      "priority": 5
-    },
-    {
-      "attr_path": "redoc-cli",
-      "broken": false,
-      "derivation": "/nix/store/y7qnpbhjp7qnkhg10hqyk46gzj56y6n7-redoc-cli-0.13.21.drv",
-      "description": "OpenAPI/Swagger-generated API Reference Documentation",
-      "install_id": "redoc-cli",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "name": "redoc-cli-0.13.21",
-      "pname": "redoc-cli",
-      "rev": "91050ea1e57e50388fa87a3302ba12d188ef723a",
-      "rev_count": 555097,
-      "rev_date": "2023-12-01T13:12:07Z",
-      "scrape_date": "2024-08-15T23:08:02Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.13.21",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/vn2y5k36kxj0shn3hb3rj3li0mdvlbas-redoc-cli-0.13.21"
       },
       "system": "x86_64-linux",
       "group": "toplevel",

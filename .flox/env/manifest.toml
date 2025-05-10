@@ -10,7 +10,6 @@ version = 1
 # the `[install]` section.
 [install]
 go.pkg-path = "go"
-redoc-cli.pkg-path = "redoc-cli"
 gnumake.pkg-path = "gnumake"
 fortune.pkg-path = "fortune"
 nodejs.pkg-path = "nodejs"
