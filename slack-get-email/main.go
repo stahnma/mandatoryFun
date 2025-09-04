@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/slack-go/slack"
 	"log"
 	"os"
-
-	"github.com/slack-go/slack"
+	"sort"
+	"strings"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 	channelID := os.Getenv("SLACK_CHANNEL")
 
 	if token == "" || channelID == "" {
-		log.Fatal("SLACK_TOKEN and SLACK_CHANNEL environment variables are required")
+		log.Fatal("SLACK_TOKEN (xoxb-...) and SLACK_CHANNEL (channel id) environment variables are required")
 	}
 
 	api := slack.New(token)
@@ -23,9 +24,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to get channel members: %s", err)
 	}
+	// Sort users alphabetically by RealName, case-insensitive
+	sort.Slice(users, func(i, j int) bool {
+		return strings.ToLower(users[i].Profile.RealName) < strings.ToLower(users[j].Profile.RealName)
+	})
 
 	// Print email addresses of the members
 	for _, user := range users {
+		if user.Profile.Email == "" {
+			continue
+		}
 		fmt.Println(user.Profile.RealName + " <" + user.Profile.Email + ">")
 	}
 }
