@@ -4,6 +4,10 @@
 // Commands:
 //   hubot "<quote>" -- <author> - Store a new quote along with your username and the current time.
 //   hubot wisdom - Responds with a random quote from the memory.
+//
+//  Configuration:
+//    HUBOT_WISDOM_INCLUDE_TIMESTAMP=true - If set to true, the bot will include
+//      the timestamp of when the quote was added in the response.
 
 // Author: stahnma
 
@@ -69,15 +73,22 @@ module.exports = (robot) => {
   // Responding with a random quote
   robot.respond(/wisdom$/i, (msg) => {
     const quotes = robot.brain.data.quotes;
+    const includeTimestamp = process.env.HUBOT_WISDOM_INCLUDE_TIMESTAMP === 'true';
 
     // Check if there are any quotes stored
     if(quotes && quotes.length > 0) {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       const {
         quote,
-        author
+        author,
+        timestamp
       } = quotes[randomIndex];
-      msg.send(`${quote} -- ${author}`);
+
+      let output = `${quote} -- ${author}`;
+      if (includeTimestamp && timestamp) {
+        output += ` (added: ${timestamp})`;
+      }
+      msg.send(output);
     } else {
       msg.send("I have no wisdom to share yet. Please teach me.");
     }

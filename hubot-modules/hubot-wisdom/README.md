@@ -17,7 +17,18 @@ Edit your `external-scripts.json` file in your hubot applicaiton directory and a
 
 
 # Configuration
-N/A
+
+## HUBOT_WISDOM_INCLUDE_TIMESTAMP
+
+When set to `true`, the wisdom command will include the timestamp of when the quote was added.
+
+- **Default**: `false`
+- **Example**: `HUBOT_WISDOM_INCLUDE_TIMESTAMP=true`
+
+When enabled, the output format will be:
+```
+"quote" -- author (added: YYYY-MM-DD HH:MM:SS)
+```
 
 # License
 MIT
