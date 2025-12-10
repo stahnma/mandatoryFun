@@ -38,26 +38,19 @@ plan those fun times with yhour channel.
    - Set the OAuth token and the channel ID as environment variables.
 
    ```sh
-   export SLACK_TOKEN="your-oauth-access-token"
-   export SLACK_CHANNEL="your-channel-id"
-   ```
+   export SLACK_TOKEN="your-oauth-access-token" # Something like `xoxb-` 
+   export SLACK_CHANNEL="your-channel-id" # something like `CFQMFA9PJL`
+  ```
 
 ## Usage
 
-1. **Clone the Repository:**
-
-   ```sh
-   git clone https://github.com/yourusername/slack-email-extractor.git
-   cd slack-email-extractor
-   ```
-
-2. **Run the Program:**
+1. **Run the Program:**
 
    ```sh
    go run main.go
    ```
 
-3. **Output:**
+2. **Output:**
 
    The program will print the real names and email addresses of all members in the specified Slack channel.
 
