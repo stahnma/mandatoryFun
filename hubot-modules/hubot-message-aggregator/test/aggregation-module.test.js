@@ -43,6 +43,9 @@ describe('reaction-aggregator module exports', () => {
         };
         // Freeze time for deterministic timing-based logic
         clock = sinon.useFakeTimers(new Date('2025-04-24T12:00:00Z').getTime());
+        // Inject the faked Date into the rewired module (rewire gives the module
+        // its own Date binding that sinon.useFakeTimers does not replace)
+        aggregator.__set__('Date', Date);
     });
 
     afterEach(() => {
