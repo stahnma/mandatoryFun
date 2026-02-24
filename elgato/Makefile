@@ -14,6 +14,9 @@ VERSION=$(shell git describe --tags --always --dirty)
 COMMIT=$(shell git rev-parse --short HEAD)
 BUILDDATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 
+test:
+	go test -v ./...
+
 build: tidy
 	go build -ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.buildDate=$(BUILDDATE)" -o $(NAME) .
 
