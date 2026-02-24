@@ -50,7 +50,7 @@ install: build
 platforms: mac linux
 
 test: fmt
-	go test -v .
+	CSPP_SLACK_TOKEN=xoxb-test CSPP_SLACK_CHANNEL=test CSPP_SLACK_TEAM_ID=T12345 go test -v .
 
 tests: test
 

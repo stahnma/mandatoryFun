@@ -38,6 +38,26 @@ You need to set the following enviornment variables.
 
 If you specify a port via `CSPP_PORT` and `CSPP_BASE_URL` the one found in `CSPP_BASE_URL` will be used. If you don't specify a port in `CSPP_BASE_URL` the one found in `CSPP_PORT` will be used. If neither is specified, the default port `8080` will be used.
 
+### Command Line Flags
+
+| Flag | Description |
+|------|-------------|
+| `--config` | Path to a config file (default is none) |
+| `--ready-systemd` | Generate a systemd unit file for this service and exit |
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/upload` | Upload an image with a caption. Requires `X-API-Key` header. Body is multipart form with `image` (file) and `caption` (text) fields. |
+| `POST` | `/api` | Request a new API key. Body is JSON with `slack_id` field. The key is sent via Slack DM. |
+| `DELETE` | `/api` | Revoke an API key. Requires `X-API-Key` header containing the key to revoke. |
+| `GET` | `/usage` | Serves usage documentation as HTML (rendered from markdown). |
+
+### Supported Image Formats
+
+Uploads currently support: `.jpg`, `.jpeg`, `.png`, `.gif`
+
 ## Slack Specifics
 
 ### Finding the Team ID
@@ -63,6 +83,26 @@ cspp.example.com {
     }
 }
 ```
+## Shell Helpers
+
+The `shell-helpers/` directory contains convenience scripts for development:
+
+- `post.sh <image_file> <caption>` - Upload an image (requires `$API_KEY` env var)
+- `api_key_revoke.sh` - Revoke an API key (requires `$API_KEY` env var)
+
+These default to `http://localhost:7171` for local development. Edit the `URI` variable for production use.
+
+## Testing
+
+```shell
+# Set required env vars (can be dummy values for tests)
+export CSPP_SLACK_TOKEN=xoxb-test
+export CSPP_SLACK_CHANNEL=test
+export CSPP_SLACK_TEAM_ID=T12345
+
+make test
+```
+
 ## Contributions
 
 We use a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) style for commit messages and this is enforced by CI.
@@ -70,4 +110,4 @@ We use a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) s
 ## License
 MIT
 
-© Michael Stahnke 2023,2024
+© Michael Stahnke 2023-2025
