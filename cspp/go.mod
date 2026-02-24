@@ -1,6 +1,6 @@
 module github.com/stahnma/mandatoryFun/cspp
 
-go 1.24.0
+go 1.25.5
 
 require (
 	github.com/fsnotify/fsnotify v1.7.0

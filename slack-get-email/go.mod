@@ -1,6 +1,6 @@
 module github.com/stahnma/mandatoryFun/slack-get-email
 
-go 1.23.0
+go 1.25.5
 
 require github.com/slack-go/slack v0.13.0
 
