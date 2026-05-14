@@ -11,6 +11,7 @@ const {
     findChannelIdByName,
     fetchMessagePermalink
 } = aggregator;
+const isSlackAdapter = aggregator.__get__('isSlackAdapter');
 
 describe('reaction-aggregator module exports', () => {
     let robot;
@@ -573,6 +574,27 @@ describe('reaction-aggregator module exports', () => {
         });
     });
 
+    describe('isSlackAdapter', () => {
+        it('matches adapterName values containing slack', () => {
+            expect(isSlackAdapter({
+                adapterName: '@hubot-friends/hubot-slack'
+            })).to.be.true;
+        });
+
+        it('falls back to robot.adapter.name when adapterName is unset', () => {
+            expect(isSlackAdapter({
+                adapter: { name: 'SlackBot' }
+            })).to.be.true;
+        });
+
+        it('returns false when neither adapter value is slack', () => {
+            expect(isSlackAdapter({
+                adapterName: 'shell',
+                adapter: { name: 'discord' }
+            })).to.be.false;
+        });
+    });
+
     describe('module initialization', () => {
         it('does not register listener for non-slack adapter', () => {
             const initRobot = {
@@ -586,6 +608,28 @@ describe('reaction-aggregator module exports', () => {
         it('registers hearReaction for slack adapter', () => {
             const initRobot = {
                 adapterName: 'slack',
+                hearReaction: sinon.spy(),
+                logger: { error: sinon.spy(), info: sinon.spy() },
+                brain: { data: {} }
+            };
+            aggregator(initRobot);
+            expect(initRobot.hearReaction.calledOnce).to.be.true;
+        });
+
+        it('registers hearReaction for adapter names containing slack', () => {
+            const initRobot = {
+                adapterName: '@hubot-friends/hubot-slack',
+                hearReaction: sinon.spy(),
+                logger: { error: sinon.spy(), info: sinon.spy() },
+                brain: { data: {} }
+            };
+            aggregator(initRobot);
+            expect(initRobot.hearReaction.calledOnce).to.be.true;
+        });
+
+        it('registers hearReaction when robot.adapter.name contains slack', () => {
+            const initRobot = {
+                adapter: { name: 'Slack Adapter' },
                 hearReaction: sinon.spy(),
                 logger: { error: sinon.spy(), info: sinon.spy() },
                 brain: { data: {} }
