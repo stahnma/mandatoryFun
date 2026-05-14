@@ -17,6 +17,15 @@ const {
   WebClient
 } = require('@slack/web-api');
 
+function isSlackAdapter(robot) {
+  const adapterName = robot.adapterName != null
+    ? robot.adapterName
+    : robot.adapter && robot.adapter.name != null
+    ? robot.adapter.name
+    : '';
+  return /slack/i.test(adapterName);
+}
+
 module.exports = (robot) => {
 
   // Listening for quotes and storing them
@@ -41,7 +50,7 @@ module.exports = (robot) => {
     });
 
     // Check if the bot is running in Slack
-    if(robot.adapterName === 'slack') {
+    if(isSlackAdapter(robot)) {
       const slackMessage = msg.message.rawMessage;
 
       if(slackMessage && slackMessage.ts && slackMessage.channel) {

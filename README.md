@@ -1,7 +1,7 @@
 # Mando Fun
 
 This is the collection tools, daemons, libraries and binaries for collaborating
-with your collegues across the internet. 
+with your colleagues across the internet. 
 
 The primary goal is to be things that are enjoyable to use, but ultimately have
 some utility in terms of helping people accomplish something -- even if that
