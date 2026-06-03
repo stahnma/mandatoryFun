@@ -33,6 +33,18 @@ const slackClient = slackToken ? new WebClient(slackToken) : null;
 // In-memory cache for room name/type
 const roomCache = new Map();
 
+function getAdapterName(robot) {
+  return robot.adapterName != null
+    ? robot.adapterName
+    : robot.adapter && robot.adapter.name != null
+    ? robot.adapter.name
+    : '';
+}
+
+function isSlackAdapter(robot) {
+  return /slack/i.test(getAdapterName(robot));
+}
+
 function getSlackRoomType(roomId) {
   if (!roomId || typeof roomId !== 'string') return 'unknown';
   if (roomId.startsWith('C')) return 'public_channel';
@@ -74,8 +86,9 @@ async function getRoomInfo(roomId) {
 }
 
 module.exports = (robot) => {
-  if (robot.adapterName !== 'slack') {
-    console.log(`[hubot-logger] Adapter is '${robot.adapterName}', skipping Slack-specific logging.`);
+  const adapterName = getAdapterName(robot);
+  if (!isSlackAdapter(robot)) {
+    console.log(`[hubot-logger] Adapter is '${adapterName}', skipping Slack-specific logging.`);
     return;
   }
 
@@ -113,4 +126,3 @@ module.exports = (robot) => {
     }
   });
 };
-

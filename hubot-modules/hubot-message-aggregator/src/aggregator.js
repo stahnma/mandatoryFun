@@ -52,6 +52,15 @@ const handleReaction = (res, robot) => {
     handleReactionWithChannelId(res, robot, targetChannel, aggregatorPattern, regexFlags);
 };
 
+function isSlackAdapter(robot) {
+    const adapterName = robot.adapterName != null
+        ? robot.adapterName
+        : robot.adapter && robot.adapter.name != null
+        ? robot.adapter.name
+        : '';
+    return /slack/i.test(adapterName);
+}
+
 function handleReactionWithChannelId(res, robot, channelId, aggregatorPattern, regexFlags) {
     const message = res.message;
     const reactionRegex = new RegExp(aggregatorPattern, regexFlags);
@@ -182,7 +191,7 @@ function findChannelIdByName(robot, channelName) {
 }
 
 module.exports = (robot) => {
-    if (robot.adapterName !== 'slack') {
+    if (!isSlackAdapter(robot)) {
         return;
     }
 
