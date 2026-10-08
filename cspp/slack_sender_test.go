@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/slack-go/slack"
 	"github.com/spf13/viper"
 )
 
@@ -158,5 +160,91 @@ func TestImageInfoJsonRoundTrip(t *testing.T) {
 	}
 	if decoded.ApiKey != info.ApiKey {
 		t.Errorf("ApiKey = %q, want %q", decoded.ApiKey, info.ApiKey)
+	}
+}
+
+type fakeLister struct {
+	pages [][]slack.Channel
+	calls int
+	err   error
+}
+
+func (f *fakeLister) GetConversations(params *slack.GetConversationsParameters) ([]slack.Channel, string, error) {
+	if f.err != nil {
+		return nil, "", f.err
+	}
+	page := f.pages[f.calls]
+	f.calls++
+	next := ""
+	if f.calls < len(f.pages) {
+		next = "cursor"
+	}
+	return page, next, nil
+}
+
+func channel(id, name string) slack.Channel {
+	var c slack.Channel
+	c.ID = id
+	c.Name = name
+	return c
+}
+
+func TestResolveChannelID(t *testing.T) {
+	pages := [][]slack.Channel{
+		{channel("C11111111", "general")},
+		{channel("C22222222", "cspp"), channel("G33333333", "secret")},
+	}
+
+	tests := []struct {
+		name      string
+		input     string
+		want      string
+		wantCalls int
+		wantErr   bool
+	}{
+		{"public ID passes through", "C0123ABCDE", "C0123ABCDE", 0, false},
+		{"private ID passes through", "G0123ABCDE", "G0123ABCDE", 0, false},
+		{"name with hash", "#cspp", "C22222222", 2, false},
+		{"name without hash", "cspp", "C22222222", 2, false},
+		{"private channel name", "secret", "G33333333", 2, false},
+		{"unknown name", "#nope", "", 2, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			channelIDCache = map[string]string{}
+			f := &fakeLister{pages: pages}
+			got, err := resolveChannelID(f, tt.input)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("resolveChannelID(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+			}
+			if got != tt.want {
+				t.Errorf("resolveChannelID(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+			if f.calls != tt.wantCalls {
+				t.Errorf("GetConversations called %d times, want %d", f.calls, tt.wantCalls)
+			}
+		})
+	}
+}
+
+func TestResolveChannelIDCaches(t *testing.T) {
+	channelIDCache = map[string]string{}
+	f := &fakeLister{pages: [][]slack.Channel{{channel("C22222222", "cspp")}}}
+	for i := 0; i < 3; i++ {
+		if got, err := resolveChannelID(f, "#cspp"); err != nil || got != "C22222222" {
+			t.Fatalf("resolveChannelID = %q, %v", got, err)
+		}
+	}
+	if f.calls != 1 {
+		t.Errorf("GetConversations called %d times, want 1", f.calls)
+	}
+}
+
+func TestResolveChannelIDAPIError(t *testing.T) {
+	channelIDCache = map[string]string{}
+	f := &fakeLister{err: errors.New("missing_scope")}
+	if _, err := resolveChannelID(f, "#cspp"); err == nil {
+		t.Fatal("expected error")
 	}
 }

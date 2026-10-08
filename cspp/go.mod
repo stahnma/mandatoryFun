@@ -8,7 +8,7 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/slack-go/slack v0.12.3
+	github.com/slack-go/slack v0.23.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.18.2
 )

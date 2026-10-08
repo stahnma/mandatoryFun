@@ -25,7 +25,7 @@ You need to set the following enviornment variables.
 |---------------------|--------------------------------------------------------|----------|--------------------------------------------------------------|---------------------------------|
 | `CSPP_SLACK_TOKEN`    | slack token used to send message to slack              | required | `xoxb-1234567890-1234567890123-12345678901234567890abcdef123456` | none                            |
 | `CSPP_DATA_DIR`       | directory to save images, credentials, invalid uploads, images sent, etc | required | `/var/lib/cspp`                                              | `./data`                        |
-| `CSPP_SLACK_CHANNEL` | slack channel to send images to                        | required | `#cspp`                                                      | none                            |
+| `CSPP_SLACK_CHANNEL` | channel ID (preferred) or name to send images to      | required | `C0123ABCDE` or `#cspp`                                      | none                            |
 | `CSPP_SLACK_TEAM_ID`  | slack team id to validate requests                     | required | `T12345678`                                                  | none                            |
 | `CSPP_PORT`           | port to listen on                                      | optional | `8080`                                                       | `8080`                          |
 | `CSPP_BASE_URL`       | base url for the server                                | optional | `https://cspp.example.com`                                   | `.` (meaning all paths are relative) |
@@ -33,6 +33,10 @@ You need to set the following enviornment variables.
 | `CSPP_PROCESSED_DIR`  | directory to save images sent                          | optional | `/var/lib/cspp/processed`                                    | `./data/processed`              |
 | `CSPP_UPLOADS_DIR`    | directory to save images                               | optional | `/var/lib/cspp/uploads`                                      | `./data/uploads`                |
 | `CSPP_CREDENTIALS_DIR`| directory to save API keys as json blobs               | optional | `/var/lib/cspp/credentials`                                  | `./data/credentials`           |
+
+:warning: Slack channel and bot scopes
+
+Images are posted with Slack's `files.getUploadURLExternal` / `files.completeUploadExternal` API, which needs a channel ID. If `CSPP_SLACK_CHANNEL` is a name, CSPP looks the ID up once at first upload, which needs the `channels:read` scope (plus `groups:read` for a private channel). Setting the ID directly skips that lookup. The bot also needs `files:write`, `chat:write`, and `users:read`, and must be a member of the channel.
 
 :warning: How do ports work?
 
