@@ -18,6 +18,7 @@ Previously included:
 
   * zoom-notifier -> Moved to its own repo at [stahnma/zoom-notifier](https://github.com/stahnma/zoom-notifier).
   * hubot-message-aggregator -> Moved to its own repo at [stahnma/hubot-message-aggregator](https://github.com/stahnma/hubot-message-aggregator).
+  * hubot-wisdom -> Moved to its own repo at [stahnma/hubot-wisdom](https://github.com/stahnma/hubot-wisdom).
 
 
 # License
