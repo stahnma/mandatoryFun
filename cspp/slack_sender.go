@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -18,7 +19,54 @@ import (
 var (
 	watcher *fsnotify.Watcher
 	mu      sync.Mutex
+
+	channelIDCache   = map[string]string{}
+	channelIDCacheMu sync.Mutex
+	channelIDPattern = regexp.MustCompile(`^[CG][A-Z0-9]{8,}$`)
 )
+
+type conversationLister interface {
+	GetConversations(params *slack.GetConversationsParameters) ([]slack.Channel, string, error)
+}
+
+// resolveChannelID returns the Slack channel ID for channel, which may be an
+// ID already or a channel name with or without a leading '#'. Slack's file
+// upload API only accepts IDs. Name lookups need the channels:read scope
+// (and groups:read for private channels), and are cached.
+func resolveChannelID(api conversationLister, channel string) (string, error) {
+	if channelIDPattern.MatchString(channel) {
+		return channel, nil
+	}
+	name := strings.TrimPrefix(channel, "#")
+
+	channelIDCacheMu.Lock()
+	defer channelIDCacheMu.Unlock()
+	if id, ok := channelIDCache[name]; ok {
+		return id, nil
+	}
+
+	params := &slack.GetConversationsParameters{
+		ExcludeArchived: true,
+		Limit:           1000,
+		Types:           []string{"public_channel", "private_channel"},
+	}
+	for {
+		channels, cursor, err := api.GetConversations(params)
+		if err != nil {
+			return "", fmt.Errorf("looking up Slack channel %q (set CSPP_SLACK_CHANNEL to the channel ID to skip this): %w", channel, err)
+		}
+		for _, c := range channels {
+			if c.Name == name {
+				channelIDCache[name] = c.ID
+				return c.ID, nil
+			}
+		}
+		if cursor == "" {
+			return "", fmt.Errorf("slack channel %q not found; set CSPP_SLACK_CHANNEL to the channel ID", channel)
+		}
+		params.Cursor = cursor
+	}
+}
 
 func watchDirectory(directoryPath string, done chan struct{}) {
 	log.Debugln("(watchDirectory)", directoryPath)
@@ -161,12 +209,22 @@ func uploadImageToSlack(j ImageInfo) error {
 		comment = j.Caption
 	}
 
-	params := slack.FileUploadParameters{
-		File:           filePath,
+	info, err := file.Stat()
+	if err != nil {
+		return err
+	}
+
+	channelID, err := resolveChannelID(slackApi, slack_channel)
+	if err != nil {
+		return err
+	}
+
+	params := slack.UploadFileParameters{
+		Reader:         file,
+		FileSize:       int(info.Size()),
 		Filename:       filepath.Base(filePath),
-		Filetype:       "auto",
 		Title:          getAuthor(j.ApiKey),
-		Channels:       []string{slack_channel},
+		Channel:        channelID,
 		InitialComment: comment,
 	}
 
